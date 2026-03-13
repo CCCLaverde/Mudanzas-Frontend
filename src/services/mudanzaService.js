@@ -1,6 +1,6 @@
 const API_URL = "http://localhost:8080/mudanzas";
 
-// 🔹 Obtener todas las mudanzas (con filtros opcionales)
+// 🔹 Obtener todas las mudanzas
 export const obtenerMudanzas = async (filtros = {}) => {
   const queryParams = new URLSearchParams(filtros).toString();
 
@@ -28,4 +28,32 @@ export const crearMudanza = async (mudanza) => {
   }
 
   return await response.json();
+};
+
+// 🔹 Actualizar mudanza
+export const actualizarMudanza = async (id, mudanza) => {
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(mudanza),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al actualizar mudanza");
+  }
+
+  return await response.json();
+};
+
+// 🔹 Eliminar mudanza
+export const eliminarMudanza = async (id) => {
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al eliminar mudanza");
+  }
 };

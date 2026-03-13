@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { crearMudanza } from "../services/mudanzaService";
+import { useState, useEffect } from "react";
+import { crearMudanza, actualizarMudanza } from "../services/mudanzaService";
 
-function MudanzaForm({ onMudanzaCreada }) {
+function MudanzaForm({ onMudanzaCreada, mudanzaEditar, setMudanzaEditar }) {
+
   const [formData, setFormData] = useState({
     fecha: "",
     hora: "",
@@ -10,6 +11,20 @@ function MudanzaForm({ onMudanzaCreada }) {
     descripcion: "",
     estado: "PENDIENTE",
   });
+
+  // 🔹 Cargar datos cuando se selecciona editar
+  useEffect(() => {
+    if (mudanzaEditar) {
+      setFormData({
+        fecha: mudanzaEditar.fecha || "",
+        hora: mudanzaEditar.hora || "",
+        lugarRecogida: mudanzaEditar.lugarRecogida || "",
+        lugarEntrega: mudanzaEditar.lugarEntrega || "",
+        descripcion: mudanzaEditar.descripcion || "",
+        estado: mudanzaEditar.estado || "PENDIENTE",
+      });
+    }
+  }, [mudanzaEditar]);
 
   const handleChange = (e) => {
     setFormData({
@@ -22,27 +37,45 @@ function MudanzaForm({ onMudanzaCreada }) {
     e.preventDefault();
 
     try {
-      await crearMudanza(formData);
-      onMudanzaCreada(); // recargar lista
+
+      if (mudanzaEditar) {
+
+        // 🔹 actualizar
+        await actualizarMudanza(mudanzaEditar.id, formData);
+        setMudanzaEditar(null);
+
+      } else {
+
+        // 🔹 crear
+        await crearMudanza(formData);
+
+      }
+
+      onMudanzaCreada();
+
       setFormData({
         fecha: "",
+        hora: "",
         lugarRecogida: "",
         lugarEntrega: "",
         descripcion: "",
         estado: "PENDIENTE",
       });
+
     } catch (error) {
-      console.error("Error creando mudanza:", error);
+      console.error("Error guardando mudanza:", error);
     }
   };
 
-  
-
   return (
     <div>
-      <h3>Crear Nueva Mudanza</h3>
+
+      <h3>
+        {mudanzaEditar ? "Editar Mudanza" : "Crear Nueva Mudanza"}
+      </h3>
 
       <form onSubmit={handleSubmit}>
+
         <input
           type="date"
           name="fecha"
@@ -51,14 +84,15 @@ function MudanzaForm({ onMudanzaCreada }) {
           required
         />
 
-      <label>Hora</label>
-          <input
-            type="time"
-            name="hora"
-            value={formData.hora}
-            onChange={handleChange}
-            required
-         />
+        <label>Hora</label>
+
+        <input
+          type="time"
+          name="hora"
+          value={formData.hora}
+          onChange={handleChange}
+          required
+        />
 
         <input
           type="text"
@@ -97,8 +131,12 @@ function MudanzaForm({ onMudanzaCreada }) {
           <option value="CANCELADA">CANCELADA</option>
         </select>
 
-        <button type="submit">Guardar</button>
+        <button type="submit">
+          {mudanzaEditar ? "Actualizar" : "Guardar"}
+        </button>
+
       </form>
+
     </div>
   );
 }
