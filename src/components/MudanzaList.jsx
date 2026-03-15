@@ -1,16 +1,23 @@
 function MudanzaList({ mudanzas, onEditar, onEliminar }) {
 
   if (!mudanzas || mudanzas.length === 0) {
-    return <p>No hay mudanzas registradas.</p>;
+    return <p style={{ textAlign: "center" }}>No hay mudanzas registradas.</p>;
   }
 
-  // Ordenar por fecha más reciente
   const mudanzasOrdenadas = [...mudanzas].sort(
     (a, b) => new Date(b.fecha) - new Date(a.fecha)
   );
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+        gap: "20px",
+        width: "100%",
+        marginTop: "20px"
+      }}
+    >
 
       {mudanzasOrdenadas.map((m) => {
 
@@ -25,34 +32,48 @@ function MudanzaList({ mudanzas, onEditar, onEliminar }) {
           <div
             key={m.id}
             style={{
-              border: "1px solid #ccc",
-              borderRadius: "10px",
-              padding: "15px",
-              width: "260px",
-              boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-              background: "#fff",
+              borderRadius: "12px",
+              padding: "18px",
+              background: "#ffffff",
+              border: "1px solid #e6e6e6",
               position: "relative",
+              transition: "all 0.25s ease",
+              boxShadow: "0 0 8px rgba(0,170,255,0.15)"
+            }}
+
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-5px)";
+              e.currentTarget.style.boxShadow =
+                "0 0 12px rgba(0,170,255,0.3), 0 0 25px rgba(0,170,255,0.2)";
+            }}
+
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 0 8px rgba(0,170,255,0.15)";
             }}
           >
 
-            {/* Estado arriba a la derecha */}
+            {/* Estado */}
             <span
               style={{
                 position: "absolute",
-                top: "10px",
-                right: "10px",
+                top: "12px",
+                right: "12px",
                 background: colorEstado[m.estado],
                 color: "white",
-                padding: "5px 8px",
-                borderRadius: "5px",
-                fontSize: "0.85rem",
+                padding: "4px 10px",
+                borderRadius: "20px",
+                fontSize: "0.75rem",
                 fontWeight: "bold",
               }}
             >
               {m.estado}
             </span>
 
-            <h4>🚚 Mudanza</h4>
+            <h3 style={{ marginBottom: "8px" }}>
+              🚚 Mudanza
+            </h3>
 
             <p>
               <strong>📅 Fecha:</strong> {m.fecha}
@@ -70,18 +91,44 @@ function MudanzaList({ mudanzas, onEditar, onEliminar }) {
               <strong>📍 Entrega:</strong> {m.lugarEntrega}
             </p>
 
-            <p>
-              <strong>📝 Descripción:</strong> {m.descripcion || "Sin descripción"}
+            <p style={{ marginTop: "6px" }}>
+              <strong>📝 Descripción:</strong>{" "}
+              {m.descripcion || "Sin descripción"}
             </p>
 
-            <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
-              <button onClick={() => onEditar(m)}>
+            <div
+              style={{
+                marginTop: "12px",
+                display: "flex",
+                gap: "10px"
+              }}
+            >
+              <button
+                onClick={() => onEditar(m)}
+                style={{
+                  flex: 1,
+                  padding: "6px",
+                  borderRadius: "6px",
+                  border: "none",
+                  background: "#0d6efd",
+                  color: "white",
+                  cursor: "pointer"
+                }}
+              >
                 ✏ Editar
               </button>
 
               <button
                 onClick={() => onEliminar(m.id)}
-                style={{ color: "red" }}
+                style={{
+                  flex: 1,
+                  padding: "6px",
+                  borderRadius: "6px",
+                  border: "none",
+                  background: "#dc3545",
+                  color: "white",
+                  cursor: "pointer"
+                }}
               >
                 🗑 Eliminar
               </button>

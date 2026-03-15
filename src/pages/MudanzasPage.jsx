@@ -1,9 +1,9 @@
+
 import { useEffect, useState } from "react";
 import MudanzaForm from "../components/MudanzaForm";
 import MudanzaList from "../components/MudanzaList";
 import MudanzaFilter from "../components/MudanzaFilter";
-import { obtenerMudanzas } from "../services/mudanzaService";
-import { eliminarMudanza } from "../services/mudanzaService";
+import { obtenerMudanzas, eliminarMudanza } from "../services/mudanzaService";
 
 function MudanzasPage() {
 
@@ -11,22 +11,11 @@ function MudanzasPage() {
   const [mudanzaEditar, setMudanzaEditar] = useState(null);
   const [mudanzasHoy, setMudanzasHoy] = useState([]);
 
-  const handleEliminar = async (id) => {
+  const [darkMode, setDarkMode] = useState(false);
 
-  const confirmar = window.confirm("¿Seguro que quieres eliminar esta mudanza?");
-
-  if (!confirmar) return;
-
-  try {
-
-    await eliminarMudanza(id);
-
-    cargarMudanzas(); // refrescar lista
-
-  } catch (error) {
-    console.error("Error eliminando mudanza", error);
-  }
-};
+  const backgroundColor = darkMode ? "#0f172a" : "#f4f6fb";
+  const cardColor = darkMode ? "#1e293b" : "#ffffff";
+  const textColor = darkMode ? "#e2e8f0" : "#333";
 
   const cargarMudanzas = async () => {
     try {
@@ -38,27 +27,39 @@ function MudanzasPage() {
   };
 
   const cargarMudanzasHoy = async () => {
-  try {
+    try {
 
-    const hoy = new Date().toISOString().split("T")[0];
+      const hoy = new Date().toISOString().split("T")[0];
 
-    const response = await fetch(
-      `http://localhost:8080/mudanzas/fecha?fecha=${hoy}`
-    );
+      const response = await fetch(
+        `http://localhost:8080/mudanzas/fecha?fecha=${hoy}`
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    setMudanzasHoy(data);
+      setMudanzasHoy(data);
 
-  } catch (error) {
-    console.error("Error cargando mudanzas de hoy", error);
-  }
-};
+    } catch (error) {
+      console.error("Error cargando mudanzas de hoy", error);
+    }
+  };
 
-    useEffect(() => {
-    cargarMudanzas();
-    cargarMudanzasHoy();
-  }, []);
+  const handleEliminar = async (id) => {
+
+    const confirmar = window.confirm("¿Seguro que quieres eliminar esta mudanza?");
+    if (!confirmar) return;
+
+    try {
+
+      await eliminarMudanza(id);
+
+      cargarMudanzas();
+      cargarMudanzasHoy();
+
+    } catch (error) {
+      console.error("Error eliminando mudanza", error);
+    }
+  };
 
   const handleFilter = async (filters) => {
     try {
@@ -83,37 +84,111 @@ function MudanzasPage() {
     }
   };
 
-  return (
-    <div>
+  useEffect(() => {
+    cargarMudanzas();
+    cargarMudanzasHoy();
+  }, []);
 
-              {mudanzasHoy.length > 0 && (
+  return (
+    <div
+      style={{
+        background: backgroundColor,
+        minHeight: "100vh",
+        padding: "15px",
+        transition: "all 0.3s ease"
+      }}
+    >
+
+      {/* interruptor modo oscuro */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "15px"
+        }}
+      >
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          style={{
+            padding: "8px 14px",
+            borderRadius: "8px",
+            border: "none",
+            background: darkMode ? "#38bdf8" : "#111",
+            color: "white",
+            cursor: "pointer"
+          }}
+        >
+          {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
+        </button>
+      </div>
+
+      {/* banner mudanzas de hoy */}
+
+      <div
+        style={{
+          background: cardColor,
+          borderRadius: "12px",
+          padding: "20px",
+          marginBottom: "25px",
+          border: darkMode ? "1px solid #334155" : "1px solid #e5e7eb",
+          boxShadow: "0 0 10px rgba(0,170,255,0.15)",
+          color: textColor
+        }}
+      >
+
+        <h3 style={{ marginBottom: "15px" }}>
+          🚚 Mudanzas de Hoy ({mudanzasHoy.length})
+        </h3>
+
+        {mudanzasHoy.length === 0 ? (
+          <p>No hay mudanzas programadas hoy.</p>
+        ) : (
           <div
             style={{
-              background: "#f0f8ff",
-              border: "1px solid #ccc",
-              padding: "15px",
-              marginBottom: "20px",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: "10px"
             }}
           >
-            <h3>🚚 Mudanzas para hoy ({mudanzasHoy.length})</h3>
 
-            <ul>
-              {mudanzasHoy.map((m) => (
-                <li key={m.id}>
-                  <strong>{m.hora}</strong> — {m.lugarRecogida} → {m.lugarEntrega}
-                </li>
-              ))}
-            </ul>
+            {mudanzasHoy.map((m) => (
+              <div
+                key={m.id}
+                style={{
+                  padding: "10px",
+                  borderRadius: "8px",
+                  background: darkMode ? "#020617" : "#f9fafb",
+                  border: darkMode ? "1px solid #334155" : "1px solid #eee"
+                }}
+              >
+
+                <strong>{m.hora}</strong>
+
+                <p style={{ margin: "4px 0" }}>
+                  {m.lugarRecogida}
+                </p>
+
+                <p style={{ margin: 0 }}>
+                  → {m.lugarEntrega}
+                </p>
+
+              </div>
+            ))}
+
           </div>
         )}
 
-      <h1>Gestión de Mudanzas</h1>
+      </div>
 
       <MudanzaForm
-        onMudanzaCreada={cargarMudanzas}
+        onMudanzaCreada={() => {
+          cargarMudanzas();
+          cargarMudanzasHoy();
+        }}
         mudanzaEditar={mudanzaEditar}
         setMudanzaEditar={setMudanzaEditar}
       />
+
       <MudanzaFilter onFilter={handleFilter} />
 
       <MudanzaList
@@ -127,3 +202,4 @@ function MudanzasPage() {
 }
 
 export default MudanzasPage;
+
