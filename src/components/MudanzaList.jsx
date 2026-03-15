@@ -1,7 +1,20 @@
-function MudanzaList({ mudanzas, onEditar, onEliminar }) {
+function MudanzaList({ mudanzas, onEditar, onEliminar, darkMode }) {
+
+  const cardBackground = darkMode ? "#1e293b" : "#ffffff";
+  const textColor = darkMode ? "#e2e8f0" : "#333";
+  const borderColor = darkMode ? "#334155" : "#e6e6e6";
 
   if (!mudanzas || mudanzas.length === 0) {
-    return <p style={{ textAlign: "center" }}>No hay mudanzas registradas.</p>;
+    return (
+      <p
+        style={{
+          textAlign: "center",
+          color: textColor
+        }}
+      >
+        No hay mudanzas registradas.
+      </p>
+    );
   }
 
   const mudanzasOrdenadas = [...mudanzas].sort(
@@ -34,11 +47,12 @@ function MudanzaList({ mudanzas, onEditar, onEliminar }) {
             style={{
               borderRadius: "12px",
               padding: "18px",
-              background: "#ffffff",
-              border: "1px solid #e6e6e6",
+              background: cardBackground,
+              border: `1px solid ${borderColor}`,
               position: "relative",
               transition: "all 0.25s ease",
-              boxShadow: "0 0 8px rgba(0,170,255,0.15)"
+              boxShadow: "0 0 8px rgba(0,170,255,0.15)",
+              color: textColor
             }}
 
             onMouseEnter={(e) => {

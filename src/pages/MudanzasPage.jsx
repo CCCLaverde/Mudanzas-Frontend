@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import MudanzaForm from "../components/MudanzaForm";
 import MudanzaList from "../components/MudanzaList";
@@ -10,7 +9,6 @@ function MudanzasPage() {
   const [mudanzas, setMudanzas] = useState([]);
   const [mudanzaEditar, setMudanzaEditar] = useState(null);
   const [mudanzasHoy, setMudanzasHoy] = useState([]);
-
   const [darkMode, setDarkMode] = useState(false);
 
   const backgroundColor = darkMode ? "#0f172a" : "#f4f6fb";
@@ -94,112 +92,141 @@ function MudanzasPage() {
       style={{
         background: backgroundColor,
         minHeight: "100vh",
-        padding: "15px",
-        transition: "all 0.3s ease"
+        padding: "30px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        transition: "all 0.3s ease",
       }}
     >
 
-      {/* interruptor modo oscuro */}
+      {/* CONTENEDOR PRINCIPAL CON NEON */}
       <div
         style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "15px"
+          width: "100%",
+          maxWidth: "1200px",
+          borderRadius: "20px",
+          padding: "30px",
+          background: cardColor,
+          border: darkMode
+            ? "1px solid rgba(56,189,248,0.4)"
+            : "1px solid #e5e7eb",
+
+          boxShadow: darkMode
+            ? "0 0 8px #38bdf8, 0 0 20px #38bdf8, 0 0 40px rgba(56,189,248,0.6)"
+            : "0 0 15px rgba(0,170,255,0.15)",
+
+          transition: "all 0.3s ease",
+          color: textColor,
+          borderRadius: "12px",
         }}
       >
-        <button
-          onClick={() => setDarkMode(!darkMode)}
+
+        {/* BOTON MODO OSCURO */}
+        <div
           style={{
-            padding: "8px 14px",
-            borderRadius: "8px",
-            border: "none",
-            background: darkMode ? "#38bdf8" : "#111",
-            color: "white",
-            cursor: "pointer"
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: "15px"
           }}
         >
-          {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
-        </button>
-      </div>
-
-      {/* banner mudanzas de hoy */}
-
-      <div
-        style={{
-          background: cardColor,
-          borderRadius: "12px",
-          padding: "20px",
-          marginBottom: "25px",
-          border: darkMode ? "1px solid #334155" : "1px solid #e5e7eb",
-          boxShadow: "0 0 10px rgba(0,170,255,0.15)",
-          color: textColor
-        }}
-      >
-
-        <h3 style={{ marginBottom: "15px" }}>
-          🚚 Mudanzas de Hoy ({mudanzasHoy.length})
-        </h3>
-
-        {mudanzasHoy.length === 0 ? (
-          <p>No hay mudanzas programadas hoy.</p>
-        ) : (
-          <div
+          <button
+            onClick={() => setDarkMode(!darkMode)}
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-              gap: "10px"
+              padding: "8px 14px",
+              borderRadius: "8px",
+              border: "none",
+              background: darkMode ? "#38bdf8" : "#111",
+              color: "white",
+              cursor: "pointer"
             }}
           >
+            {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
+          </button>
+        </div>
 
-            {mudanzasHoy.map((m) => (
-              <div
-                key={m.id}
-                style={{
-                  padding: "10px",
-                  borderRadius: "8px",
-                  background: darkMode ? "#020617" : "#f9fafb",
-                  border: darkMode ? "1px solid #334155" : "1px solid #eee"
-                }}
-              >
+        {/* BANNER MUDANZAS HOY */}
+        <div
+          style={{
+            background: darkMode ? "#020617" : "#f9fafb",
+            borderRadius: "12px",
+            padding: "20px",
+            marginBottom: "25px",
+            border: darkMode ? "1px solid #334155" : "1px solid #e5e7eb",
+            boxShadow: "0 0 10px rgba(0,170,255,0.15)"
+          }}
+        >
 
-                <strong>{m.hora}</strong>
+          <h3 style={{ marginBottom: "15px" }}>
+            🚚 Mudanzas de Hoy ({mudanzasHoy.length})
+          </h3>
 
-                <p style={{ margin: "4px 0" }}>
-                  {m.lugarRecogida}
-                </p>
+          {mudanzasHoy.length === 0 ? (
+            <p>No hay mudanzas programadas hoy.</p>
+          ) : (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                gap: "10px"
+              }}
+            >
 
-                <p style={{ margin: 0 }}>
-                  → {m.lugarEntrega}
-                </p>
+              {mudanzasHoy.map((m) => (
+                <div
+                  key={m.id}
+                  style={{
+                    padding: "10px",
+                    borderRadius: "8px",
+                    background: darkMode ? "#020617" : "#ffffff",
+                    border: darkMode ? "1px solid #334155" : "1px solid #eee"
+                  }}
+                >
 
-              </div>
-            ))}
+                  <strong>{m.hora}</strong>
 
-          </div>
-        )}
+                  <p style={{ margin: "4px 0" }}>
+                    {m.lugarRecogida}
+                  </p>
+
+                  <p style={{ margin: 0 }}>
+                    → {m.lugarEntrega}
+                  </p>
+
+                </div>
+              ))}
+
+            </div>
+          )}
+
+        </div>
+
+        <MudanzaForm
+          darkMode={darkMode}
+          onMudanzaCreada={() => {
+            cargarMudanzas();
+            cargarMudanzasHoy();
+          }}
+          mudanzaEditar={mudanzaEditar}
+          setMudanzaEditar={setMudanzaEditar}
+        />
+
+        <MudanzaFilter
+          darkMode={darkMode}
+          onFilter={handleFilter}
+        />
+
+        <MudanzaList
+          mudanzas={mudanzas}
+          darkMode={darkMode}
+          onEditar={setMudanzaEditar}
+          onEliminar={handleEliminar}
+        />
 
       </div>
-
-      <MudanzaForm
-        onMudanzaCreada={() => {
-          cargarMudanzas();
-          cargarMudanzasHoy();
-        }}
-        mudanzaEditar={mudanzaEditar}
-        setMudanzaEditar={setMudanzaEditar}
-      />
-
-      <MudanzaFilter onFilter={handleFilter} />
-
-      <MudanzaList
-        mudanzas={mudanzas}
-        onEditar={setMudanzaEditar}
-        onEliminar={handleEliminar}
-      />
 
     </div>
   );
 }
 
 export default MudanzasPage;
-
