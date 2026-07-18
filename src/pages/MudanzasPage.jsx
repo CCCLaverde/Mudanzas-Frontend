@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import MudanzaForm from "../components/MudanzaForm";
 import MudanzaList from "../components/MudanzaList";
 import MudanzaFilter from "../components/MudanzaFilter";
@@ -10,6 +10,8 @@ function MudanzasPage() {
   const [mudanzaEditar, setMudanzaEditar] = useState(null);
   const [mudanzasHoy, setMudanzasHoy] = useState([]);
   const [darkMode, setDarkMode] = useState(false);
+
+  const formRef = useRef(null); // referencia al formulario
 
   const backgroundColor = darkMode ? "#0f172a" : "#f4f6fb";
   const cardColor = darkMode ? "#1e293b" : "#ffffff";
@@ -59,6 +61,20 @@ function MudanzasPage() {
     }
   };
 
+  /* SCROLL AUTOMATICO AL EDITAR */
+  const handleEditar = (mudanza) => {
+
+    setMudanzaEditar(mudanza);
+
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 100);
+
+  };
+
   const handleFilter = async (filters) => {
     try {
 
@@ -100,7 +116,7 @@ function MudanzasPage() {
       }}
     >
 
-      {/* CONTENEDOR PRINCIPAL CON NEON */}
+      {/* CONTENEDOR PRINCIPAL */}
       <div
         style={{
           width: "100%",
@@ -118,7 +134,6 @@ function MudanzasPage() {
 
           transition: "all 0.3s ease",
           color: textColor,
-          borderRadius: "12px",
         }}
       >
 
@@ -201,15 +216,18 @@ function MudanzasPage() {
 
         </div>
 
-        <MudanzaForm
-          darkMode={darkMode}
-          onMudanzaCreada={() => {
-            cargarMudanzas();
-            cargarMudanzasHoy();
-          }}
-          mudanzaEditar={mudanzaEditar}
-          setMudanzaEditar={setMudanzaEditar}
-        />
+        {/* FORMULARIO CON REFERENCIA */}
+        <div ref={formRef}>
+          <MudanzaForm
+            darkMode={darkMode}
+            onMudanzaCreada={() => {
+              cargarMudanzas();
+              cargarMudanzasHoy();
+            }}
+            mudanzaEditar={mudanzaEditar}
+            setMudanzaEditar={setMudanzaEditar}
+          />
+        </div>
 
         <MudanzaFilter
           darkMode={darkMode}
@@ -219,7 +237,7 @@ function MudanzasPage() {
         <MudanzaList
           mudanzas={mudanzas}
           darkMode={darkMode}
-          onEditar={setMudanzaEditar}
+          onEditar={handleEditar}
           onEliminar={handleEliminar}
         />
 

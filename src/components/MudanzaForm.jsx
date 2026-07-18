@@ -1,8 +1,12 @@
-import { useState } from "react";
-import { crearMudanza } from "../services/mudanzaService";
+import { useState, useEffect } from "react";
+import { crearMudanza, actualizarMudanza } from "../services/mudanzaService";
 
-function MudanzaForm({ onMudanzaCreada, darkMode }) {
-
+function MudanzaForm({
+  onMudanzaCreada,
+  mudanzaEditar,
+  setMudanzaEditar,
+  darkMode,
+}) {
   const [formData, setFormData] = useState({
     fecha: "",
     hora: "",
@@ -10,14 +14,39 @@ function MudanzaForm({ onMudanzaCreada, darkMode }) {
     lugarEntrega: "",
     descripcion: "",
     estado: "PENDIENTE",
+    cliente: {
+      nombre: "",
+      telefono: "",
+      email: "",
+    },
   });
 
-  /* COLORES DINÁMICOS */
+  /* CARGAR DATOS CUANDO SE EDITA */
+  useEffect(() => {
+    if (mudanzaEditar) {
+      setFormData({
+        fecha: mudanzaEditar.fecha,
+        hora: mudanzaEditar.hora,
+        lugarRecogida: mudanzaEditar.lugarRecogida,
+        lugarEntrega: mudanzaEditar.lugarEntrega,
+        descripcion: mudanzaEditar.descripcion,
+        estado: mudanzaEditar.estado,
+
+        cliente: {
+          nombre: mudanzaEditar.nombreCliente || "",
+          telefono: mudanzaEditar.telefonoCliente || "",
+          email: "",
+        },
+      });
+    }
+  }, [mudanzaEditar]);
+
+  /* COLORES */
   const backgroundColor = darkMode ? "#1e293b" : "#ffffff";
   const textColor = darkMode ? "#e2e8f0" : "#333";
   const borderColor = darkMode ? "#334155" : "#e6e6e6";
-  const inputBackground = darkMode ? "#020617" : "#ffffff";
 
+  /* CAMPOS DE LA MUDANZA */
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -25,24 +54,48 @@ function MudanzaForm({ onMudanzaCreada, darkMode }) {
     });
   };
 
+  /* CAMPOS DEL CLIENTE */
+  const handleClienteChange = (e) => {
+    setFormData({
+      ...formData,
+      cliente: {
+        ...formData.cliente,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
+
+  const limpiarFormulario = () => {
+    setFormData({
+      fecha: "",
+      hora: "",
+      lugarRecogida: "",
+      lugarEntrega: "",
+      descripcion: "",
+      estado: "PENDIENTE",
+      cliente: {
+        nombre: "",
+        telefono: "",
+        email: "",
+      },
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await crearMudanza(formData);
+      if (mudanzaEditar) {
+        await actualizarMudanza(mudanzaEditar.id, formData);
+      } else {
+        await crearMudanza(formData);
+      }
+
       onMudanzaCreada();
-
-      setFormData({
-        fecha: "",
-        hora: "",
-        lugarRecogida: "",
-        lugarEntrega: "",
-        descripcion: "",
-        estado: "PENDIENTE",
-      });
-
+      limpiarFormulario();
+      setMudanzaEditar(null);
     } catch (error) {
-      console.error("Error creando mudanza:", error);
+      console.error("Error guardando mudanza:", error);
     }
   };
 
@@ -50,7 +103,7 @@ function MudanzaForm({ onMudanzaCreada, darkMode }) {
     <div
       style={{
         width: "100%",
-        maxWidth: "650px",
+        maxWidth: "700px",
         margin: "40px auto",
         padding: "30px",
         borderRadius: "14px",
@@ -58,161 +111,152 @@ function MudanzaForm({ onMudanzaCreada, darkMode }) {
         border: `1px solid ${borderColor}`,
         color: textColor,
         boxShadow: "0 0 10px rgba(0,170,255,0.15)",
-        transition: "all 0.3s ease",
-        boxSizing: "border-box"
       }}
     >
-
-      <h2
-        style={{
-          marginBottom: "25px",
-          textAlign: "center",
-          fontWeight: "600"
-        }}
-      >
-        🚚 Nueva Mudanza
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+        {mudanzaEditar ? "✏ Editar Mudanza" : "🚚 Nueva Mudanza"}
       </h2>
 
       <form
         onSubmit={handleSubmit}
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "18px"
+          gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+          gap: "15px",
         }}
       >
+        {/* ================= MUDANZA ================= */}
 
-        {/* Fecha */}
-        <div style={fieldStyle}>
-          <label>Fecha</label>
-          <input
-            type="date"
-            name="fecha"
-            value={formData.fecha}
-            onChange={handleChange}
-            required
-            style={inputStyle(darkMode)}
-          />
-        </div>
+        <h3
+          style={{
+            gridColumn: "1 / -1",
+            color: "#0d6efd",
+            marginBottom: "0",
+          }}
+        >
+          🚚 Datos de la mudanza
+        </h3>
 
-        {/* Hora */}
-        <div style={fieldStyle}>
-          <label>Hora</label>
-          <input
-            type="time"
-            name="hora"
-            value={formData.hora}
-            onChange={handleChange}
-            required
-            style={inputStyle(darkMode)}
-          />
-        </div>
+        <input
+          type="date"
+          name="fecha"
+          value={formData.fecha}
+          onChange={handleChange}
+          required
+        />
 
-        {/* Recogida */}
-        <div style={{ ...fieldStyle, gridColumn: "span 2" }}>
-          <label>Lugar de recogida</label>
-          <input
-            type="text"
-            name="lugarRecogida"
-            value={formData.lugarRecogida}
-            onChange={handleChange}
-            required
-            style={inputStyle(darkMode)}
-          />
-        </div>
+        <input
+          type="time"
+          name="hora"
+          value={formData.hora}
+          onChange={handleChange}
+          required
+        />
 
-        {/* Entrega */}
-        <div style={{ ...fieldStyle, gridColumn: "span 2" }}>
-          <label>Lugar de entrega</label>
-          <input
-            type="text"
-            name="lugarEntrega"
-            value={formData.lugarEntrega}
-            onChange={handleChange}
-            required
-            style={inputStyle(darkMode)}
-          />
-        </div>
+        <input
+          type="text"
+          name="lugarRecogida"
+          placeholder="Lugar de recogida"
+          value={formData.lugarRecogida}
+          onChange={handleChange}
+          required
+        />
 
-        {/* Descripción */}
-        <div style={{ ...fieldStyle, gridColumn: "span 2" }}>
-          <label>Descripción</label>
-          <textarea
-            name="descripcion"
-            value={formData.descripcion}
-            onChange={handleChange}
-            rows="3"
-            style={inputStyle(darkMode)}
-          />
-        </div>
+        <input
+          type="text"
+          name="lugarEntrega"
+          placeholder="Lugar de entrega"
+          value={formData.lugarEntrega}
+          onChange={handleChange}
+          required
+        />
 
-        {/* Estado */}
-        <div style={{ ...fieldStyle, gridColumn: "span 2" }}>
-          <label>Estado</label>
-          <select
-            name="estado"
-            value={formData.estado}
-            onChange={handleChange}
-            style={inputStyle(darkMode)}
-          >
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="EN_PROCESO">EN PROCESO</option>
-            <option value="FINALIZADA">FINALIZADA</option>
-            <option value="CANCELADA">CANCELADA</option>
-          </select>
-        </div>
+        <textarea
+          name="descripcion"
+          placeholder="Descripción"
+          value={formData.descripcion}
+          onChange={handleChange}
+          style={{
+            gridColumn: "1 / -1",
+            minHeight: "90px",
+          }}
+        />
 
-        {/* Botón */}
-        <div style={{ gridColumn: "span 2", textAlign: "center", marginTop: "10px" }}>
-          <button
-            type="submit"
-            style={{
-              padding: "12px 26px",
-              borderRadius: "8px",
-              border: "none",
-              background: "#0d6efd",
-              color: "white",
-              fontSize: "16px",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.2s ease"
-            }}
+        <select
+          name="estado"
+          value={formData.estado}
+          onChange={handleChange}
+          style={{
+            gridColumn: "1 / -1",
+          }}
+        >
+          <option value="PENDIENTE">PENDIENTE</option>
+          <option value="EN_PROCESO">EN PROCESO</option>
+          <option value="FINALIZADA">FINALIZADA</option>
+          <option value="CANCELADA">CANCELADA</option>
+        </select>
 
-            onMouseEnter={(e)=>{
-              e.currentTarget.style.boxShadow = "0 0 12px rgba(0,170,255,0.5)";
-              e.currentTarget.style.transform = "translateY(-2px)";
-            }}
+        {/* ================= CLIENTE ================= */}
 
-            onMouseLeave={(e)=>{
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            Guardar Mudanza
-          </button>
-        </div>
+        <h3
+          style={{
+            gridColumn: "1 / -1",
+            color: "#0d6efd",
+            marginTop: "15px",
+            marginBottom: "0",
+          }}
+        >
+          👤 Datos del cliente
+        </h3>
 
+        <input
+          type="text"
+          name="nombre"
+          placeholder="Nombre del cliente"
+          value={formData.cliente.nombre}
+          onChange={handleClienteChange}
+          required
+        />
+
+        <input
+          type="text"
+          name="telefono"
+          placeholder="Teléfono"
+          value={formData.cliente.telefono}
+          onChange={handleClienteChange}
+          required
+        />
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Correo electrónico (opcional)"
+          value={formData.cliente.email}
+          onChange={handleClienteChange}
+          style={{
+            gridColumn: "1 / -1",
+          }}
+        />
+
+        <button
+          type="submit"
+          style={{
+            gridColumn: "1 / -1",
+            padding: "12px",
+            background: "#0d6efd",
+            border: "none",
+            color: "white",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "16px",
+            fontWeight: "bold",
+          }}
+        >
+          {mudanzaEditar ? "Actualizar Mudanza" : "Guardar Mudanza"}
+        </button>
       </form>
-
     </div>
   );
 }
-
-const fieldStyle = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "5px"
-};
-
-const inputStyle = (darkMode) => ({
-  padding: "10px",
-  borderRadius: "6px",
-  border: darkMode ? "1px solid #334155" : "1px solid #ccc",
-  fontSize: "14px",
-  width: "100%",
-  boxSizing: "border-box",
-  background: darkMode ? "#020617" : "#ffffff",
-  color: darkMode ? "#e2e8f0" : "#333"
-});
 
 export default MudanzaForm;
