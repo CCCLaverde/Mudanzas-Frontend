@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { crearMudanza, actualizarMudanza } from "../services/mudanzaService";
+import { obtenerColaboradoresActivos } from "../services/colaboradorService";
 
 function MudanzaForm({
   onMudanzaCreada,
@@ -14,39 +15,74 @@ function MudanzaForm({
     lugarEntrega: "",
     descripcion: "",
     estado: "PENDIENTE",
+
     cliente: {
       nombre: "",
       telefono: "",
       email: "",
     },
+
+    colaboradores: [],
   });
 
-  /* CARGAR DATOS CUANDO SE EDITA */
-  useEffect(() => {
-    if (mudanzaEditar) {
-      setFormData({
-        fecha: mudanzaEditar.fecha,
-        hora: mudanzaEditar.hora,
-        lugarRecogida: mudanzaEditar.lugarRecogida,
-        lugarEntrega: mudanzaEditar.lugarEntrega,
-        descripcion: mudanzaEditar.descripcion,
-        estado: mudanzaEditar.estado,
+  const [colaboradores, setColaboradores] = useState([]);
 
-        cliente: {
-          nombre: mudanzaEditar.nombreCliente || "",
-          telefono: mudanzaEditar.telefonoCliente || "",
-          email: "",
-        },
-      });
+  /* =========================
+     CARGAR COLABORADORES
+  ========================= */
+
+  useEffect(() => {
+    cargarColaboradores();
+  }, []);
+
+  const cargarColaboradores = async () => {
+    try {
+      const data = await obtenerColaboradoresActivos();
+      setColaboradores(data);
+    } catch (error) {
+      console.error("Error cargando colaboradores:", error);
     }
+  };
+
+  /* =========================
+     CARGAR DATOS PARA EDITAR
+  ========================= */
+
+  useEffect(() => {
+    if (!mudanzaEditar) return;
+
+    setFormData({
+      fecha: mudanzaEditar.fecha,
+      hora: mudanzaEditar.hora,
+      lugarRecogida: mudanzaEditar.lugarRecogida,
+      lugarEntrega: mudanzaEditar.lugarEntrega,
+      descripcion: mudanzaEditar.descripcion,
+      estado: mudanzaEditar.estado,
+
+      cliente: {
+        nombre: mudanzaEditar.nombreCliente || "",
+        telefono: mudanzaEditar.telefonoCliente || "",
+        email: "",
+      },
+
+      colaboradores: mudanzaEditar.colaboradores
+        ? mudanzaEditar.colaboradores.map((c) => c.id)
+        : [],
+    });
   }, [mudanzaEditar]);
 
-  /* COLORES */
+  /* =========================
+     COLORES
+  ========================= */
+
   const backgroundColor = darkMode ? "#1e293b" : "#ffffff";
   const textColor = darkMode ? "#e2e8f0" : "#333";
   const borderColor = darkMode ? "#334155" : "#e6e6e6";
 
-  /* CAMPOS DE LA MUDANZA */
+  /* =========================
+     HANDLERS
+  ========================= */
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -54,7 +90,6 @@ function MudanzaForm({
     });
   };
 
-  /* CAMPOS DEL CLIENTE */
   const handleClienteChange = (e) => {
     setFormData({
       ...formData,
@@ -65,6 +100,15 @@ function MudanzaForm({
     });
   };
 
+  const handleColaboradorChange = (id) => {
+    setFormData((prev) => ({
+      ...prev,
+      colaboradores: prev.colaboradores.includes(id)
+        ? prev.colaboradores.filter((c) => c !== id)
+        : [...prev.colaboradores, id],
+    }));
+  };
+
   const limpiarFormulario = () => {
     setFormData({
       fecha: "",
@@ -73,13 +117,20 @@ function MudanzaForm({
       lugarEntrega: "",
       descripcion: "",
       estado: "PENDIENTE",
+
       cliente: {
         nombre: "",
         telefono: "",
         email: "",
       },
+
+      colaboradores: [],
     });
   };
+
+  /* =========================
+     GUARDAR
+  ========================= */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -131,7 +182,7 @@ function MudanzaForm({
           style={{
             gridColumn: "1 / -1",
             color: "#0d6efd",
-            marginBottom: "0",
+            marginBottom: 0,
           }}
         >
           🚚 Datos de la mudanza
@@ -203,7 +254,7 @@ function MudanzaForm({
             gridColumn: "1 / -1",
             color: "#0d6efd",
             marginTop: "15px",
-            marginBottom: "0",
+            marginBottom: 0,
           }}
         >
           👤 Datos del cliente
@@ -237,6 +288,54 @@ function MudanzaForm({
             gridColumn: "1 / -1",
           }}
         />
+
+        {/* ================= COLABORADORES ================= */}
+
+        <h3
+          style={{
+            gridColumn: "1 / -1",
+            color: "#0d6efd",
+            marginTop: "15px",
+            marginBottom: 0,
+          }}
+        >
+          👷 Colaboradores
+        </h3>
+
+        <div
+          style={{
+            gridColumn: "1 / -1",
+            border: `1px solid ${borderColor}`,
+            borderRadius: "8px",
+            padding: "15px",
+            display: "grid",
+            gap: "10px",
+          }}
+        >
+          {colaboradores.length === 0 ? (
+            <span>No hay colaboradores activos.</span>
+          ) : (
+            colaboradores.map((c) => (
+              <label
+                key={c.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={formData.colaboradores.includes(c.id)}
+                  onChange={() => handleColaboradorChange(c.id)}
+                />
+
+                {c.nombre}
+              </label>
+            ))
+          )}
+        </div>
 
         <button
           type="submit"

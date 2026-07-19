@@ -120,7 +120,6 @@ function MudanzaList({ mudanzas, onEditar, onEliminar, darkMode }) {
                     fontSize: "1.2rem",
                   }}
                 >
-                  ⬇
                 </div>
                 <div>🏁 {m.lugarEntrega}</div>
               </div>
