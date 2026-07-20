@@ -77,22 +77,8 @@ function MudanzasPage() {
 
   const handleFilter = async (filters) => {
     try {
-
-      let url = "http://localhost:8080/mudanzas";
-
-      if (filters.fecha) {
-        url = `http://localhost:8080/mudanzas/fecha?fecha=${filters.fecha}`;
-      }
-
-      if (filters.estado) {
-        url = `http://localhost:8080/mudanzas/estado?estado=${filters.estado}`;
-      }
-
-      const response = await fetch(url);
-      const data = await response.json();
-
+      const data = await obtenerMudanzas(filters);
       setMudanzas(data);
-
     } catch (error) {
       console.error("Error filtrando mudanzas", error);
     }
