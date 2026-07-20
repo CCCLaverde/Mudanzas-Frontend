@@ -1,11 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { obtenerColaboradoresActivos } from "../services/colaboradorService";
 
 function MudanzaFilter({ onFilter, darkMode }) {
 
-  const [fecha, setFecha] = useState("");
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
   const [estado, setEstado] = useState("");
+  const [colaboradorId, setColaboradorId] = useState("");
 
-  /* COLORES DINÁMICOS */
+  const [colaboradores, setColaboradores] = useState([]);
+
+  useEffect(() => {
+    cargarColaboradores();
+  }, []);
+
+  const cargarColaboradores = async () => {
+    try {
+      const data = await obtenerColaboradoresActivos();
+      setColaboradores(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /* COLORES */
+
   const backgroundColor = darkMode ? "#1e293b" : "#ffffff";
   const textColor = darkMode ? "#e2e8f0" : "#333";
   const borderColor = darkMode ? "#334155" : "#e6e6e6";
@@ -14,14 +33,20 @@ function MudanzaFilter({ onFilter, darkMode }) {
     e.preventDefault();
 
     onFilter({
-      fecha,
-      estado
+      fechaInicio,
+      fechaFin,
+      estado,
+      colaboradorId
     });
   };
 
   const limpiarFiltros = () => {
-    setFecha("");
+
+    setFechaInicio("");
+    setFechaFin("");
     setEstado("");
+    setColaboradorId("");
+
     onFilter({});
   };
 
@@ -30,7 +55,7 @@ function MudanzaFilter({ onFilter, darkMode }) {
       style={{
         display: "flex",
         justifyContent: "center",
-        marginBottom: "30px"
+        marginBottom: "30px",
       }}
     >
       <form
@@ -40,37 +65,55 @@ function MudanzaFilter({ onFilter, darkMode }) {
           alignItems: "center",
           gap: "18px",
           flexWrap: "wrap",
-          padding: "15px 25px",
+          padding: "18px 25px",
           background: backgroundColor,
           borderRadius: "12px",
           border: `1px solid ${borderColor}`,
           color: textColor,
           boxShadow: "0 0 8px rgba(0,170,255,0.15)",
-          transition: "all 0.3s ease"
         }}
       >
 
         <h3
           style={{
-            marginRight: "10px",
-            fontWeight: "600"
+            width: "100%",
+            marginBottom: "5px",
           }}
         >
           🔎 Filtrar Mudanzas
         </h3>
 
+        {/* Fecha Inicio */}
+
         <div style={fieldStyle}>
-          <label>Fecha</label>
+          <label>Fecha inicio</label>
+
           <input
             type="date"
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
+            value={fechaInicio}
+            onChange={(e) => setFechaInicio(e.target.value)}
             style={inputStyle(darkMode)}
           />
         </div>
 
+        {/* Fecha Fin */}
+
+        <div style={fieldStyle}>
+          <label>Fecha fin</label>
+
+          <input
+            type="date"
+            value={fechaFin}
+            onChange={(e) => setFechaFin(e.target.value)}
+            style={inputStyle(darkMode)}
+          />
+        </div>
+
+        {/* Estado */}
+
         <div style={fieldStyle}>
           <label>Estado</label>
+
           <select
             value={estado}
             onChange={(e) => setEstado(e.target.value)}
@@ -84,17 +127,32 @@ function MudanzaFilter({ onFilter, darkMode }) {
           </select>
         </div>
 
+        {/* Colaborador */}
+
+        <div style={fieldStyle}>
+          <label>Colaborador</label>
+
+          <select
+            value={colaboradorId}
+            onChange={(e) => setColaboradorId(e.target.value)}
+            style={inputStyle(darkMode)}
+          >
+            <option value="">Todos</option>
+
+            {colaboradores.map((c) => (
+              <option
+                key={c.id}
+                value={c.id}
+              >
+                {c.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <button
           type="submit"
           style={buscarBtn}
-
-          onMouseEnter={(e)=>{
-            e.currentTarget.style.boxShadow = "0 0 10px rgba(0,170,255,0.4)";
-          }}
-
-          onMouseLeave={(e)=>{
-            e.currentTarget.style.boxShadow = "none";
-          }}
         >
           Buscar
         </button>
@@ -115,35 +173,35 @@ function MudanzaFilter({ onFilter, darkMode }) {
 const fieldStyle = {
   display: "flex",
   flexDirection: "column",
-  gap: "4px"
+  gap: "4px",
 };
 
 const inputStyle = (darkMode) => ({
   padding: "8px",
   borderRadius: "6px",
   border: darkMode ? "1px solid #334155" : "1px solid #ccc",
-  fontSize: "14px",
-  background: darkMode ? "#020617" : "#ffffff",
-  color: darkMode ? "#e2e8f0" : "#333"
+  background: darkMode ? "#020617" : "#fff",
+  color: darkMode ? "#e2e8f0" : "#333",
 });
 
 const buscarBtn = {
-  padding: "8px 14px",
-  borderRadius: "6px",
+  padding: "8px 16px",
   border: "none",
+  borderRadius: "6px",
   background: "#0d6efd",
   color: "white",
   cursor: "pointer",
-  transition: "all 0.2s ease"
+  fontWeight: "bold",
 };
 
 const limpiarBtn = {
-  padding: "8px 14px",
-  borderRadius: "6px",
+  padding: "8px 16px",
   border: "none",
+  borderRadius: "6px",
   background: "#6c757d",
   color: "white",
-  cursor: "pointer"
+  cursor: "pointer",
+  fontWeight: "bold",
 };
 
 export default MudanzaFilter;
