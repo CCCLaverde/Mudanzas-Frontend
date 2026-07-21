@@ -2,14 +2,14 @@ import { useEffect, useState, useRef } from "react";
 import MudanzaForm from "../components/MudanzaForm";
 import MudanzaList from "../components/MudanzaList";
 import MudanzaFilter from "../components/MudanzaFilter";
+import Dashboard from "../components/Dashboard";
 import { obtenerMudanzas, eliminarMudanza } from "../services/mudanzaService";
 
-function MudanzasPage() {
+function MudanzasPage({darkMode,setDarkMode}) {
 
   const [mudanzas, setMudanzas] = useState([]);
   const [mudanzaEditar, setMudanzaEditar] = useState(null);
   const [mudanzasHoy, setMudanzasHoy] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
 
   const formRef = useRef(null); // referencia al formulario
 
@@ -103,25 +103,32 @@ function MudanzasPage() {
     >
 
       {/* CONTENEDOR PRINCIPAL */}
-      <div
+     <div
         style={{
           width: "100%",
-          maxWidth: "1200px",
-          borderRadius: "20px",
-          padding: "30px",
-          background: cardColor,
+          maxWidth: "1600px",
+
+          borderRadius: "24px",
+
+          padding: "35px",
+
+          background: darkMode
+            ? "rgba(30,41,59,0.95)"
+            : "#ffffff",
+
           border: darkMode
-            ? "1px solid rgba(56,189,248,0.4)"
-            : "1px solid #e5e7eb",
+            ? "1px solid #334155"
+            : "1px solid #dbe4f0",
 
           boxShadow: darkMode
-            ? "0 0 8px #38bdf8, 0 0 20px #38bdf8, 0 0 40px rgba(56,189,248,0.6)"
-            : "0 0 15px rgba(0,170,255,0.15)",
+            ? "0 15px 35px rgba(0,0,0,.45)"
+            : "0 15px 40px rgba(0,0,0,.08)",
 
-          transition: "all 0.3s ease",
+          transition: "all .3s ease",
+
           color: textColor,
         }}
-      >
+>
 
         {/* BOTON MODO OSCURO */}
         <div
@@ -145,6 +152,12 @@ function MudanzasPage() {
             {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
           </button>
         </div>
+
+        <Dashboard
+          mudanzas={mudanzas}
+          mudanzasHoy={mudanzasHoy}
+          darkMode={darkMode}
+      />
 
         {/* BANNER MUDANZAS HOY */}
         <div
