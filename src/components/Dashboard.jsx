@@ -1,14 +1,22 @@
 import {
   Chart as ChartJS,
   ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
   Tooltip,
   Legend,
 } from "chart.js";
 
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut, Bar } from "react-chartjs-2";
+
+
 
 ChartJS.register(
   ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
   Tooltip,
   Legend
 );
@@ -68,10 +76,70 @@ mudanzas.forEach((mudanza) => {
   conteoMeses[mes]++;
 });
 
-const datosMes = meses.map((mes, index) => ({
+const mudanzaMes = meses.map((mes, index) => ({
   mes,
   cantidad: conteoMeses[index],
 }));
+
+
+// =====================================
+// DATOS GRÁFICO DE BARRAS
+// =====================================
+
+const barrasData = {
+  labels: mudanzaMes.map((d) => d.mes),
+
+  datasets: [
+    {
+      label: "Mudanzas",
+
+      data: mudanzaMes.map((d) => d.cantidad),
+
+      backgroundColor: "#3b82f6",
+
+      borderRadius: 8,
+
+      borderSkipped: false,
+    },
+  ],
+};
+
+const barrasOptions = {
+  responsive: true,
+
+  maintainAspectRatio: false,
+
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+
+  scales: {
+    x: {
+      grid: {
+        display: false,
+      },
+
+      ticks: {
+        color: darkMode ? "#cbd5e1" : "#475569",
+      },
+    },
+
+    y: {
+      beginAtZero: true,
+
+      ticks: {
+        stepSize: 1,
+        color: darkMode ? "#cbd5e1" : "#475569",
+      },
+
+      grid: {
+        color: darkMode ? "#334155" : "#e5e7eb",
+      },
+    },
+  },
+};
 
 
    //===================================
@@ -367,7 +435,7 @@ const options = {
             color: darkMode ? "#fff" : "#111827",
           }}
         >
-          🍩 Estado de las Mudanzas
+            Estado de las Mudanzas
         </h3>
 
         <div
@@ -418,7 +486,14 @@ const options = {
             height: "380px",
           }}
         >
+             <Bar
+    data={barrasData}
+    options={barrasOptions}
+  />
           {/* Aquí irá el gráfico de barras */}
+          <div
+>
+</div>
         </div>
       </div>
 
