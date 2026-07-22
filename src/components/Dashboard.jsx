@@ -21,7 +21,12 @@ ChartJS.register(
   Legend
 );
 
-function Dashboard({ mudanzas, mudanzasHoy, darkMode }) {
+function Dashboard({  
+  mudanzas,
+  mudanzasHoy,
+  darkMode,
+  onSeleccionarFiltro, }) {
+
   // =====================================
   // ESTADÍSTICAS
   // =====================================
@@ -81,6 +86,37 @@ const mudanzaMes = meses.map((mes, index) => ({
   cantidad: conteoMeses[index],
 }));
 
+// =====================================
+// MUDANZAS POR DÍA DE LA SEMANA
+// =====================================
+
+const diasSemana = [
+  "Dom",
+  "Lun",
+  "Mar",
+  "Mié",
+  "Jue",
+  "Vie",
+  "Sáb",
+];
+
+const conteoDias = Array(7).fill(0);
+
+mudanzas.forEach((mudanza) => {
+
+  const fecha = new Date(mudanza.fecha);
+
+  const dia = fecha.getDay(); // 0-6
+
+  conteoDias[dia]++;
+
+});
+
+const mudanzasDia = diasSemana.map((dia, index) => ({
+  dia,
+  cantidad: conteoDias[index],
+}));
+
 
 // =====================================
 // DATOS GRÁFICO DE BARRAS
@@ -102,6 +138,75 @@ const barrasData = {
       borderSkipped: false,
     },
   ],
+};
+
+// =====================================
+// BARRAS HORIZONTALES
+// =====================================
+
+const diasData = {
+  labels: mudanzasDia.map((d) => d.dia),
+
+  datasets: [
+    {
+      label: "Mudanzas",
+
+      data: mudanzasDia.map((d) => d.cantidad),
+
+      backgroundColor: "#06b6d4",
+
+      borderRadius: 8,
+    },
+  ],
+};
+
+const diasOptions = {
+
+  indexAxis: "y",
+
+  responsive: true,
+
+  maintainAspectRatio: false,
+
+  plugins: {
+
+    legend: {
+      display: false,
+    },
+
+  },
+
+  scales: {
+
+    x: {
+
+      beginAtZero: true,
+
+      ticks: {
+        stepSize: 1,
+        color: darkMode ? "#cbd5e1" : "#475569",
+      },
+
+      grid: {
+        color: darkMode ? "#334155" : "#e5e7eb",
+      },
+
+    },
+
+    y: {
+
+      ticks: {
+        color: darkMode ? "#cbd5e1" : "#475569",
+      },
+
+      grid: {
+        display: false,
+      },
+
+    },
+
+  },
+
 };
 
 const barrasOptions = {
@@ -201,8 +306,9 @@ const options = {
   // TARJETA
   // =====================================
 
-  const Card = ({ icono, titulo, valor, color }) => (
+  const Card = ({ icono, titulo, valor, color, onClick,}) => (
     <div
+      onClick={onClick}
       style={{
         cursor: "pointer",
         overflow: "hidden",
@@ -301,6 +407,8 @@ const options = {
   // VISTA
   // =====================================
 
+
+
   return (
   <div
     style={{
@@ -352,154 +460,213 @@ const options = {
       }}
     >
       <Card
-        icono="🚚"
-        titulo="Total de Mudanzas"
-        valor={total}
-        color="#3b82f6"
-      />
+  icono="🚚"
+  titulo="Total de Mudanzas"
+  valor={total}
+  color="#3b82f6"
+  onClick={() => onSeleccionarFiltro({})}
+/>
 
-      <Card
-        icono="📅"
-        titulo="Programadas Hoy"
-        valor={hoy}
-        color="#06b6d4"
-      />
+<Card
+  icono="📅"
+  titulo="Programadas Hoy"
+  valor={hoy}
+  color="#06b6d4"
+  onClick={() => {
+    const hoy = new Date().toISOString().split("T")[0];
 
-      <Card
-        icono="⏳"
-        titulo="Pendientes"
-        valor={pendientes}
-        color="#f59e0b"
-      />
+    onSeleccionarFiltro({
+      fechaInicio: hoy,
+      fechaFin: hoy,
+    });
+  }}
+/>
 
-      <Card
-        icono="🚛"
-        titulo="En Proceso"
-        valor={enProceso}
-        color="#8b5cf6"
-      />
+<Card
+  icono="⏳"
+  titulo="Pendientes"
+  valor={pendientes}
+  color="#f59e0b"
+  onClick={() =>
+    onSeleccionarFiltro({
+      estado: "PENDIENTE",
+    })
+  }
+/>
 
-      <Card
-        icono="✅"
-        titulo="Finalizadas"
-        valor={finalizadas}
-        color="#10b981"
-      />
+<Card
+  icono="🚛"
+  titulo="En Proceso"
+  valor={enProceso}
+  color="#8b5cf6"
+  onClick={() =>
+    onSeleccionarFiltro({
+      estado: "EN_PROCESO",
+    })
+  }
+/>
 
-      <Card
-        icono="❌"
-        titulo="Canceladas"
-        valor={canceladas}
-        color="#ef4444"
-      />
+<Card
+  icono="✅"
+  titulo="Finalizadas"
+  valor={finalizadas}
+  color="#10b981"
+  onClick={() =>
+    onSeleccionarFiltro({
+      estado: "FINALIZADA",
+    })
+  }
+/>
+
+<Card
+  icono="❌"
+  titulo="Canceladas"
+  valor={canceladas}
+  color="#ef4444"
+  onClick={() =>
+    onSeleccionarFiltro({
+      estado: "CANCELADA",
+    })
+  }
+/>
     </div>
 
-    {/* ===========================
-          GRÁFICOS
-    ============================ */}
+ {/* ===========================
+      GRÁFICOS
+============================ */}
+
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(500px,1fr))",
+    gap: "25px",
+    marginTop: "35px",
+  }}
+>
+
+  {/* DONA */}
+
+  <div
+    style={{
+      background: darkMode ? "#1e293b" : "#ffffff",
+      border: `1px solid ${darkMode ? "#334155" : "#e5e7eb"}`,
+      borderRadius: "18px",
+      padding: "25px",
+      boxShadow: darkMode
+        ? "0 10px 25px rgba(0,0,0,.35)"
+        : "0 10px 25px rgba(0,0,0,.08)",
+    }}
+  >
+
+    <h3
+      style={{
+        marginTop: 0,
+        marginBottom: "25px",
+        color: darkMode ? "#fff" : "#111827",
+      }}
+    >
+      📌 Estado de las Mudanzas
+    </h3>
 
     <div
       style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit,minmax(500px,1fr))",
-        gap: "25px",
-        marginTop: "35px",
+        height: "380px",
       }}
     >
-
-      {/* DONA */}
-
-      <div
-        style={{
-          background: darkMode
-            ? "#1e293b"
-            : "#ffffff",
-
-          border: `1px solid ${
-            darkMode ? "#334155" : "#e5e7eb"
-          }`,
-
-          borderRadius: "18px",
-
-          padding: "25px",
-
-          boxShadow: darkMode
-            ? "0 10px 25px rgba(0,0,0,.35)"
-            : "0 10px 25px rgba(0,0,0,.08)",
-        }}
-      >
-        <h3
-          style={{
-            marginTop: 0,
-            marginBottom: "25px",
-            color: darkMode ? "#fff" : "#111827",
-          }}
-        >
-            Estado de las Mudanzas
-        </h3>
-
-        <div
-          style={{
-            height: "380px",
-          }}
-        >
-          <Doughnut
-            data={data}
-            options={options}
-          />
-        </div>
-      </div>
-
-      {/* BARRAS */}
-
-      <div
-        style={{
-          background: darkMode
-            ? "#1e293b"
-            : "#ffffff",
-
-          border: `1px solid ${
-            darkMode ? "#334155" : "#e5e7eb"
-          }`,
-
-          borderRadius: "18px",
-
-          padding: "25px",
-
-          boxShadow: darkMode
-            ? "0 10px 25px rgba(0,0,0,.35)"
-            : "0 10px 25px rgba(0,0,0,.08)",
-        }}
-      >
-        <h3
-          style={{
-            marginTop: 0,
-            marginBottom: "25px",
-            color: darkMode ? "#fff" : "#111827",
-          }}
-        >
-          📈 Mudanzas por Mes
-        </h3>
-
-        <div
-          style={{
-            height: "380px",
-          }}
-        >
-             <Bar
-    data={barrasData}
-    options={barrasOptions}
-  />
-          {/* Aquí irá el gráfico de barras */}
-          <div
->
-</div>
-        </div>
-      </div>
-
+      <Doughnut
+        data={data}
+        options={options}
+      />
     </div>
 
   </div>
-)}
+
+  {/* BARRAS POR MES */}
+
+  <div
+    style={{
+      background: darkMode ? "#1e293b" : "#ffffff",
+      border: `1px solid ${darkMode ? "#334155" : "#e5e7eb"}`,
+      borderRadius: "18px",
+      padding: "25px",
+      boxShadow: darkMode
+        ? "0 10px 25px rgba(0,0,0,.35)"
+        : "0 10px 25px rgba(0,0,0,.08)",
+    }}
+  >
+
+    <h3
+      style={{
+        marginTop: 0,
+        marginBottom: "25px",
+        color: darkMode ? "#fff" : "#111827",
+      }}
+    >
+      📈 Mudanzas por Mes
+    </h3>
+
+    <div
+      style={{
+        height: "380px",
+      }}
+    >
+      <Bar
+        data={barrasData}
+        options={barrasOptions}
+      />
+    </div>
+
+  </div>
+
+</div>
+
+{/* ===========================
+      GRÁFICO DÍAS
+============================ */}
+
+<div
+  style={{
+    marginTop: "25px",
+  }}
+>
+
+  <div
+    style={{
+      background: darkMode ? "#1e293b" : "#ffffff",
+      border: `1px solid ${darkMode ? "#334155" : "#e5e7eb"}`,
+      borderRadius: "18px",
+      padding: "25px",
+      boxShadow: darkMode
+        ? "0 10px 25px rgba(0,0,0,.35)"
+        : "0 10px 25px rgba(0,0,0,.08)",
+    }}
+  >
+
+    <h3
+      style={{
+        marginTop: 0,
+        marginBottom: "25px",
+        color: darkMode ? "#fff" : "#111827",
+      }}
+    >
+      📆 Mudanzas por Día de la Semana
+    </h3>
+
+    <div
+      style={{
+        height: "380px",
+      }}
+    >
+      <Bar
+        data={diasData}
+        options={diasOptions}
+      />
+    </div>
+
+  </div>
+
+</div>
+
+  </div>)}
 
 export default Dashboard;

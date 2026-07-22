@@ -7,6 +7,7 @@ import { obtenerMudanzas, eliminarMudanza } from "../services/mudanzaService";
 
 function MudanzasPage({darkMode,setDarkMode}) {
 
+  const [todasMudanzas, setTodasMudanzas] = useState([]);
   const [mudanzas, setMudanzas] = useState([]);
   const [mudanzaEditar, setMudanzaEditar] = useState(null);
   const [mudanzasHoy, setMudanzasHoy] = useState([]);
@@ -16,15 +17,22 @@ function MudanzasPage({darkMode,setDarkMode}) {
   const backgroundColor = darkMode ? "#0f172a" : "#f4f6fb";
   const cardColor = darkMode ? "#1e293b" : "#ffffff";
   const textColor = darkMode ? "#e2e8f0" : "#333";
+  const listaRef = useRef(null);
 
   const cargarMudanzas = async () => {
-    try {
-      const data = await obtenerMudanzas();
-      setMudanzas(data);
-    } catch (error) {
-      console.error("Error cargando mudanzas", error);
-    }
-  };
+      try {
+        const data = await obtenerMudanzas();
+
+        // Lista completa para Dashboard
+        setTodasMudanzas(data);
+
+        // Lista que se mostrará en la tabla
+        setMudanzas(data);
+
+      } catch (error) {
+        console.error("Error cargando mudanzas", error);
+      }
+    };
 
   const cargarMudanzasHoy = async () => {
     try {
@@ -75,19 +83,34 @@ function MudanzasPage({darkMode,setDarkMode}) {
 
   };
 
+    const irALista = () => {
+    setTimeout(() => {
+        listaRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }, 100);
+};
+
   const handleFilter = async (filters) => {
     try {
-      const data = await obtenerMudanzas(filters);
-      setMudanzas(data);
+        const data = await obtenerMudanzas(filters);
+
+        setMudanzas(data);
+
+        irALista();
+
     } catch (error) {
-      console.error("Error filtrando mudanzas", error);
+        console.error(error);
     }
-  };
+};
 
   useEffect(() => {
     cargarMudanzas();
     cargarMudanzasHoy();
   }, []);
+
+
 
   return (
     <div
@@ -154,9 +177,10 @@ function MudanzasPage({darkMode,setDarkMode}) {
         </div>
 
         <Dashboard
-          mudanzas={mudanzas}
+           mudanzas={todasMudanzas}
           mudanzasHoy={mudanzasHoy}
           darkMode={darkMode}
+          onSeleccionarFiltro={handleFilter}
       />
 
         {/* BANNER MUDANZAS HOY */}
@@ -233,6 +257,7 @@ function MudanzasPage({darkMode,setDarkMode}) {
           onFilter={handleFilter}
         />
 
+          <div ref={listaRef}></div>
         <MudanzaList
           mudanzas={mudanzas}
           darkMode={darkMode}
