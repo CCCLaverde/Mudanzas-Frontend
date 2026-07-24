@@ -64,6 +64,7 @@ function App() {
           padding: "35px",
         }}
       >
+        
         <MudanzasPage
           darkMode={darkMode}
           setDarkMode={setDarkMode}

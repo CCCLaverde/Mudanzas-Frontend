@@ -9,6 +9,7 @@ import {
 } from "chart.js";
 
 import { Doughnut, Bar } from "react-chartjs-2";
+import CalendarioMudanzas from "./CalendarioMudanzas";
 
 
 
@@ -74,11 +75,12 @@ const meses = [
 const conteoMeses = Array(12).fill(0);
 
 mudanzas.forEach((mudanza) => {
-  const fecha = new Date(mudanza.fecha);
 
-  const mes = fecha.getMonth(); // 0 - 11
+  const [, mesMudanza] =
+    mudanza.fecha.split("-").map(Number);
 
-  conteoMeses[mes]++;
+  conteoMeses[mesMudanza - 1]++;
+
 });
 
 const mudanzaMes = meses.map((mes, index) => ({
@@ -104,12 +106,16 @@ const conteoDias = Array(7).fill(0);
 
 mudanzas.forEach((mudanza) => {
 
-  const fecha = new Date(mudanza.fecha);
+  const [anio, mesMudanza, diaMudanza] =
+  mudanza.fecha.split("-").map(Number);
 
-  const dia = fecha.getDay(); // 0-6
+const dia = new Date(
+  anio,
+  mesMudanza - 1,
+  diaMudanza
+).getDay();
 
-  conteoDias[dia]++;
-
+conteoDias[dia]++;
 });
 
 const mudanzasDia = diasSemana.map((dia, index) => ({
@@ -473,11 +479,18 @@ const options = {
   valor={hoy}
   color="#06b6d4"
   onClick={() => {
-    const hoy = new Date().toISOString().split("T")[0];
+    const ahora = new Date();
 
+    
+    const fechaHoy =
+      ahora.getFullYear() +
+      "-" +
+      String(ahora.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(ahora.getDate()).padStart(2, "0");
     onSeleccionarFiltro({
-      fechaInicio: hoy,
-      fechaFin: hoy,
+      fechaInicio: fechaHoy,
+      fechaFin: fechaHoy,
     });
   }}
 />
@@ -531,6 +544,17 @@ const options = {
 />
     </div>
 
+
+{/* ===========================
+      CALENDARIO
+============================ */}
+
+<CalendarioMudanzas
+    mudanzas={mudanzas}
+    darkMode={darkMode}
+    onSeleccionarFiltro={onSeleccionarFiltro}
+/>
+
  {/* ===========================
       GRÁFICOS
 ============================ */}
@@ -543,6 +567,8 @@ const options = {
     marginTop: "35px",
   }}
 >
+
+  
 
   {/* DONA */}
 
@@ -666,6 +692,8 @@ const options = {
   </div>
 
 </div>
+
+
 
   </div>)}
 

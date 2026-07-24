@@ -21,6 +21,7 @@ export const obtenerMudanzas = async (filtros = {}) => {
       `inicio=${filtros.fechaInicio}&` +
       `fin=${filtros.fechaFin}&` +
       `colaboradorId=${filtros.colaboradorId}`;
+
   }
 
   // =====================================
@@ -36,6 +37,7 @@ export const obtenerMudanzas = async (filtros = {}) => {
       `${API_URL}/fecha-colaborador?` +
       `fecha=${filtros.fechaInicio}&` +
       `colaboradorId=${filtros.colaboradorId}`;
+
   }
 
   // =====================================
@@ -44,10 +46,27 @@ export const obtenerMudanzas = async (filtros = {}) => {
   else if (filtros.colaboradorId) {
 
     url = `${API_URL}/colaborador/${filtros.colaboradorId}`;
+
   }
 
   // =====================================
-  // SOLO FECHA
+  // SOLO RANGO DE FECHAS
+  // =====================================
+  else if (
+    filtros.fechaInicio &&
+    filtros.fechaFin &&
+    filtros.fechaInicio !== filtros.fechaFin
+  ) {
+
+    url =
+      `${API_URL}/rango?` +
+      `inicio=${filtros.fechaInicio}&` +
+      `fin=${filtros.fechaFin}`;
+
+  }
+
+  // =====================================
+  // SOLO UNA FECHA
   // =====================================
   else if (
     filtros.fechaInicio &&
@@ -55,6 +74,7 @@ export const obtenerMudanzas = async (filtros = {}) => {
   ) {
 
     url = `${API_URL}/fecha?fecha=${filtros.fechaInicio}`;
+
   }
 
   // =====================================
@@ -63,6 +83,7 @@ export const obtenerMudanzas = async (filtros = {}) => {
   else if (filtros.estado) {
 
     url = `${API_URL}/estado?estado=${filtros.estado}`;
+
   }
 
   // =====================================
@@ -71,6 +92,7 @@ export const obtenerMudanzas = async (filtros = {}) => {
   else {
 
     url = API_URL;
+
   }
 
   console.log("Consultando:", url);
@@ -136,4 +158,5 @@ export const eliminarMudanza = async (id) => {
   if (!response.ok) {
     throw new Error("Error al eliminar mudanza");
   }
+
 };

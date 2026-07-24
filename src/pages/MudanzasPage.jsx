@@ -37,7 +37,14 @@ function MudanzasPage({darkMode,setDarkMode}) {
   const cargarMudanzasHoy = async () => {
     try {
 
-      const hoy = new Date().toISOString().split("T")[0];
+      const ahora = new Date();
+
+      const hoy =
+        ahora.getFullYear() +
+        "-" +
+        String(ahora.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(ahora.getDate()).padStart(2, "0");
 
       const response = await fetch(
         `http://localhost:8080/mudanzas/fecha?fecha=${hoy}`
@@ -125,6 +132,8 @@ function MudanzasPage({darkMode,setDarkMode}) {
       }}
     >
 
+      
+
       {/* CONTENEDOR PRINCIPAL */}
      <div
         style={{
@@ -151,7 +160,7 @@ function MudanzasPage({darkMode,setDarkMode}) {
 
           color: textColor,
         }}
->
+      >
 
         {/* BOTON MODO OSCURO */}
         <div
@@ -176,14 +185,7 @@ function MudanzasPage({darkMode,setDarkMode}) {
           </button>
         </div>
 
-        <Dashboard
-           mudanzas={todasMudanzas}
-          mudanzasHoy={mudanzasHoy}
-          darkMode={darkMode}
-          onSeleccionarFiltro={handleFilter}
-      />
-
-        {/* BANNER MUDANZAS HOY */}
+         {/* BANNER MUDANZAS HOY */}
         <div
           style={{
             background: darkMode ? "#020617" : "#f9fafb",
@@ -238,6 +240,15 @@ function MudanzasPage({darkMode,setDarkMode}) {
           )}
 
         </div>
+
+        <Dashboard
+           mudanzas={todasMudanzas}
+          mudanzasHoy={mudanzasHoy}
+          darkMode={darkMode}
+          onSeleccionarFiltro={handleFilter}
+      />
+
+       
 
         {/* FORMULARIO CON REFERENCIA */}
         <div ref={formRef}>
