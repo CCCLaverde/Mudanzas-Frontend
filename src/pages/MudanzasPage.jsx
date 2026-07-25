@@ -1,40 +1,52 @@
 import { useEffect, useState, useRef } from "react";
-import MudanzaForm from "../components/MudanzaForm";
+
+import Dashboard from "../components/Dashboard";
 import MudanzaList from "../components/MudanzaList";
 import MudanzaFilter from "../components/MudanzaFilter";
-import Dashboard from "../components/Dashboard";
-import { obtenerMudanzas, eliminarMudanza } from "../services/mudanzaService";
 
-function MudanzasPage({darkMode,setDarkMode}) {
+import MudanzaModal from "../components/modal/MudanzaModal";
+
+import {
+  obtenerMudanzas,
+  eliminarMudanza,
+} from "../services/mudanzaService";
+
+function MudanzasPage({ darkMode, setDarkMode }) {
 
   const [todasMudanzas, setTodasMudanzas] = useState([]);
   const [mudanzas, setMudanzas] = useState([]);
-  const [mudanzaEditar, setMudanzaEditar] = useState(null);
   const [mudanzasHoy, setMudanzasHoy] = useState([]);
 
-  const formRef = useRef(null); // referencia al formulario
+  const [mudanzaEditar, setMudanzaEditar] = useState(null);
+  const [mostrarModal, setMostrarModal] = useState(false);
 
-  const backgroundColor = darkMode ? "#0f172a" : "#f4f6fb";
-  const cardColor = darkMode ? "#1e293b" : "#ffffff";
-  const textColor = darkMode ? "#e2e8f0" : "#333";
   const listaRef = useRef(null);
 
+  const backgroundColor = darkMode ? "#0f172a" : "#f4f6fb";
+  const textColor = darkMode ? "#e2e8f0" : "#333";
+
+  // ==========================
+  // CARGAR TODAS
+  // ==========================
+
   const cargarMudanzas = async () => {
-      try {
-        const data = await obtenerMudanzas();
+    try {
+      const data = await obtenerMudanzas();
 
-        // Lista completa para Dashboard
-        setTodasMudanzas(data);
+      setTodasMudanzas(data);
+      setMudanzas(data);
 
-        // Lista que se mostrará en la tabla
-        setMudanzas(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-      } catch (error) {
-        console.error("Error cargando mudanzas", error);
-      }
-    };
+  // ==========================
+  // MUDANZAS DE HOY
+  // ==========================
 
   const cargarMudanzasHoy = async () => {
+
     try {
 
       const ahora = new Date();
@@ -55,14 +67,18 @@ function MudanzasPage({darkMode,setDarkMode}) {
       setMudanzasHoy(data);
 
     } catch (error) {
-      console.error("Error cargando mudanzas de hoy", error);
+      console.error(error);
     }
+
   };
+
+  // ==========================
+  // ELIMINAR
+  // ==========================
 
   const handleEliminar = async (id) => {
 
-    const confirmar = window.confirm("¿Seguro que quieres eliminar esta mudanza?");
-    if (!confirmar) return;
+    if (!window.confirm("¿Seguro que deseas eliminar esta mudanza?")) return;
 
     try {
 
@@ -72,54 +88,71 @@ function MudanzasPage({darkMode,setDarkMode}) {
       cargarMudanzasHoy();
 
     } catch (error) {
-      console.error("Error eliminando mudanza", error);
+      console.error(error);
     }
+
   };
 
-  /* SCROLL AUTOMATICO AL EDITAR */
+  // ==========================
+  // EDITAR
+  // ==========================
+
   const handleEditar = (mudanza) => {
 
     setMudanzaEditar(mudanza);
 
+    setMostrarModal(true);
+
+  };
+
+  // ==========================
+  // SCROLL LISTA
+  // ==========================
+
+  const irALista = () => {
+
     setTimeout(() => {
-      formRef.current?.scrollIntoView({
+
+      listaRef.current?.scrollIntoView({
         behavior: "smooth",
-        block: "start"
+        block: "start",
       });
+
     }, 100);
 
   };
 
-    const irALista = () => {
-    setTimeout(() => {
-        listaRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
-    }, 100);
-};
+  // ==========================
+  // FILTROS
+  // ==========================
 
   const handleFilter = async (filters) => {
+
     try {
-        const data = await obtenerMudanzas(filters);
 
-        setMudanzas(data);
+      const data = await obtenerMudanzas(filters);
 
-        irALista();
+      setMudanzas(data);
+
+      irALista();
 
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
-};
+
+  };
+
+  // ==========================
 
   useEffect(() => {
+
     cargarMudanzas();
     cargarMudanzasHoy();
+
   }, []);
 
-
-
   return (
+
     <div
       style={{
         background: backgroundColor,
@@ -128,147 +161,89 @@ function MudanzasPage({darkMode,setDarkMode}) {
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",
-        transition: "all 0.3s ease",
       }}
     >
 
-      
-
-      {/* CONTENEDOR PRINCIPAL */}
-     <div
+      <div
         style={{
           width: "100%",
           maxWidth: "1600px",
-
           borderRadius: "24px",
-
           padding: "35px",
-
           background: darkMode
-            ? "rgba(30,41,59,0.95)"
-            : "#ffffff",
-
+            ? "rgba(30,41,59,.95)"
+            : "#fff",
           border: darkMode
             ? "1px solid #334155"
             : "1px solid #dbe4f0",
-
           boxShadow: darkMode
             ? "0 15px 35px rgba(0,0,0,.45)"
             : "0 15px 40px rgba(0,0,0,.08)",
-
-          transition: "all .3s ease",
-
           color: textColor,
         }}
       >
 
-        {/* BOTON MODO OSCURO */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginBottom: "15px"
-          }}
-        >
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            style={{
-              padding: "8px 14px",
-              borderRadius: "8px",
-              border: "none",
-              background: darkMode ? "#38bdf8" : "#111",
-              color: "white",
-              cursor: "pointer"
-            }}
-          >
-            {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
-          </button>
-        </div>
+      <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "25px",
+  }}
+>
+  <button
+    onClick={() => {
+      setMudanzaEditar(null);
+      setMostrarModal(true);
+    }}
+    style={{
+      padding: "12px 20px",
+      background: "#0d6efd",
+      color: "white",
+      border: "none",
+      borderRadius: "10px",
+      cursor: "pointer",
+      fontWeight: "600",
+    }}
+  >
+    ➕ Nueva Mudanza
+  </button>
 
-         {/* BANNER MUDANZAS HOY */}
-        <div
-          style={{
-            background: darkMode ? "#020617" : "#f9fafb",
-            borderRadius: "12px",
-            padding: "20px",
-            marginBottom: "25px",
-            border: darkMode ? "1px solid #334155" : "1px solid #e5e7eb",
-            boxShadow: "0 0 10px rgba(0,170,255,0.15)"
-          }}
-        >
-
-          <h3 style={{ marginBottom: "15px" }}>
-            🚚 Mudanzas de Hoy ({mudanzasHoy.length})
-          </h3>
-
-          {mudanzasHoy.length === 0 ? (
-            <p>No hay mudanzas programadas hoy.</p>
-          ) : (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                gap: "10px"
-              }}
-            >
-
-              {mudanzasHoy.map((m) => (
-                <div
-                  key={m.id}
-                  style={{
-                    padding: "10px",
-                    borderRadius: "8px",
-                    background: darkMode ? "#020617" : "#ffffff",
-                    border: darkMode ? "1px solid #334155" : "1px solid #eee"
-                  }}
-                >
-
-                  <strong>{m.hora}</strong>
-
-                  <p style={{ margin: "4px 0" }}>
-                    {m.lugarRecogida}
-                  </p>
-
-                  <p style={{ margin: 0 }}>
-                    → {m.lugarEntrega}
-                  </p>
-
-                </div>
-              ))}
-
-            </div>
-          )}
-
-        </div>
+  <button
+    onClick={() => setDarkMode(!darkMode)}
+    style={{
+      padding: "10px 16px",
+      borderRadius: "10px",
+      border: "none",
+      background: darkMode ? "#38bdf8" : "#111",
+      color: "white",
+      cursor: "pointer",
+    }}
+  >
+    {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
+  </button>
+</div>
+      
+        {/* DASHBOARD */}
 
         <Dashboard
-           mudanzas={todasMudanzas}
+          mudanzas={todasMudanzas}
           mudanzasHoy={mudanzasHoy}
           darkMode={darkMode}
           onSeleccionarFiltro={handleFilter}
-      />
+        />
 
-       
-
-        {/* FORMULARIO CON REFERENCIA */}
-        <div ref={formRef}>
-          <MudanzaForm
-            darkMode={darkMode}
-            onMudanzaCreada={() => {
-              cargarMudanzas();
-              cargarMudanzasHoy();
-            }}
-            mudanzaEditar={mudanzaEditar}
-            setMudanzaEditar={setMudanzaEditar}
-          />
-        </div>
+        {/* FILTRO */}
 
         <MudanzaFilter
           darkMode={darkMode}
           onFilter={handleFilter}
         />
 
-          <div ref={listaRef}></div>
+        {/* LISTA */}
+
+        <div ref={listaRef}></div>
+
         <MudanzaList
           mudanzas={mudanzas}
           darkMode={darkMode}
@@ -278,8 +253,40 @@ function MudanzasPage({darkMode,setDarkMode}) {
 
       </div>
 
+      {/* MODAL */}
+
+      {mostrarModal && (
+
+        <MudanzaModal
+          darkMode={darkMode}
+          mudanzaEditar={mudanzaEditar}
+          setMudanzaEditar={setMudanzaEditar}
+          onClose={() => {
+
+            setMostrarModal(false);
+
+            setMudanzaEditar(null);
+
+          }}
+          onMudanzaCreada={() => {
+
+            cargarMudanzas();
+
+            cargarMudanzasHoy();
+
+            setMostrarModal(false);
+
+            setMudanzaEditar(null);
+
+          }}
+        />
+
+      )}
+
     </div>
+
   );
+
 }
 
 export default MudanzasPage;

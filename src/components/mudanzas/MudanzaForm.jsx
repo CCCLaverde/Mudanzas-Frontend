@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { crearMudanza, actualizarMudanza } from "../services/mudanzaService";
-import { obtenerColaboradoresActivos } from "../services/colaboradorService";
+import { crearMudanza, actualizarMudanza } from "../../services/mudanzaService";
+import { obtenerColaboradoresActivos } from "../../services/colaboradorService";
 
 function MudanzaForm({
   onMudanzaCreada,
@@ -152,17 +152,10 @@ function MudanzaForm({
 
   return (
     <div
-      style={{
-        width: "100%",
-        maxWidth: "700px",
-        margin: "40px auto",
-        padding: "30px",
-        borderRadius: "14px",
-        background: backgroundColor,
-        border: `1px solid ${borderColor}`,
-        color: textColor,
-        boxShadow: "0 0 10px rgba(0,170,255,0.15)",
-      }}
+       style={{
+    padding: "35px",
+    color: textColor,
+  }}
     >
       <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
         {mudanzaEditar ? "✏ Editar Mudanza" : "🚚 Nueva Mudanza"}
@@ -204,23 +197,39 @@ function MudanzaForm({
           required
         />
 
-        <input
-          type="text"
-          name="lugarRecogida"
-          placeholder="Lugar de recogida"
-          value={formData.lugarRecogida}
-          onChange={handleChange}
-          required
-        />
+        <div
+  style={{
+    gridColumn: "1 / -1",
+    display: "flex",
+    gap: "15px",
+  }}
+>
+  <input
+    type="text"
+    name="lugarRecogida"
+    placeholder="Lugar de recogida"
+    value={formData.lugarRecogida}
+    onChange={handleChange}
+    required
+    style={{
+     
+      flex: 1,
+    }}
+  />
 
-        <input
-          type="text"
-          name="lugarEntrega"
-          placeholder="Lugar de entrega"
-          value={formData.lugarEntrega}
-          onChange={handleChange}
-          required
-        />
+  <input
+    type="text"
+    name="lugarEntrega"
+    placeholder="Lugar de entrega"
+    value={formData.lugarEntrega}
+    onChange={handleChange}
+    required
+    style={{
+     
+      flex: 1,
+    }}
+  />
+</div>
 
         <textarea
           name="descripcion"
