@@ -1,6 +1,7 @@
 import { useState } from "react";
 import MudanzasPage from "./pages/MudanzasPage";
 
+
 function App() {
 
   const [darkMode, setDarkMode] = useState(false);

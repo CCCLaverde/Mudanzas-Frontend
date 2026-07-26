@@ -5,6 +5,7 @@ import MudanzaList from "../components/MudanzaList";
 import MudanzaFilter from "../components/MudanzaFilter";
 
 import MudanzaModal from "../components/modal/MudanzaModal";
+import ColaboradorModal from "../components/modal/ColaboradorModal";
 
 import {
   obtenerMudanzas,
@@ -19,6 +20,7 @@ function MudanzasPage({ darkMode, setDarkMode }) {
 
   const [mudanzaEditar, setMudanzaEditar] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarColaboradores, setMostrarColaboradores] = useState(false);
 
   const listaRef = useRef(null);
 
@@ -183,45 +185,80 @@ function MudanzasPage({ darkMode, setDarkMode }) {
         }}
       >
 
-      <div
+     <div
   style={{
-    display: "flex",
-    justifyContent: "space-between",
+    display: "grid",
+    gridTemplateColumns: "1fr auto 1fr",
     alignItems: "center",
     marginBottom: "25px",
   }}
 >
-  <button
-    onClick={() => {
-      setMudanzaEditar(null);
-      setMostrarModal(true);
-    }}
-    style={{
-      padding: "12px 20px",
-      background: "#0d6efd",
-      color: "white",
-      border: "none",
-      borderRadius: "10px",
-      cursor: "pointer",
-      fontWeight: "600",
-    }}
-  >
-    ➕ Nueva Mudanza
-  </button>
+  {/* IZQUIERDA */}
+  <div>
+    <button
+      onClick={() => {
+        setMudanzaEditar(null);
+        setMostrarModal(true);
+      }}
+      style={{
+        padding: "12px 20px",
+        background: "#0d6efd",
+        color: "white",
+        border: "none",
+        borderRadius: "10px",
+        cursor: "pointer",
+        fontWeight: "600",
+      }}
+    >
+      ➕ Nueva Mudanza
+    </button>
+  </div>
 
-  <button
-    onClick={() => setDarkMode(!darkMode)}
+  {/* CENTRO */}
+  <div
     style={{
-      padding: "10px 16px",
-      borderRadius: "10px",
-      border: "none",
-      background: darkMode ? "#38bdf8" : "#111",
-      color: "white",
-      cursor: "pointer",
+      display: "flex",
+      justifyContent: "center",
     }}
   >
-    {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
-  </button>
+    <button
+      onClick={() => setMostrarColaboradores(true)}
+      style={{
+        padding: "12px 20px",
+        background: "#10b981",
+        color: "white",
+        border: "none",
+        borderRadius: "10px",
+        cursor: "pointer",
+        fontWeight: "600",
+      }}
+    >
+      👷 Colaboradores
+    </button>
+  </div>
+
+  {/* DERECHA */}
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "flex-end",
+    }}
+  >
+    <button
+      onClick={() => setDarkMode(!darkMode)}
+      style={{
+        padding: "10px 16px",
+        borderRadius: "10px",
+        border: "none",
+        background: darkMode ? "#38bdf8" : "#111",
+        color: "white",
+        cursor: "pointer",
+        fontWeight: "600",
+      }}
+    >
+      {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
+    </button>
+  </div>
 </div>
       
         {/* DASHBOARD */}
@@ -283,7 +320,17 @@ function MudanzasPage({ darkMode, setDarkMode }) {
 
       )}
 
+          {/* MODAL COLABORADORES */}
+        {mostrarColaboradores && (
+      <ColaboradorModal
+        darkMode={darkMode}
+        onClose={() => setMostrarColaboradores(false)}
+      />
+    )}
+
     </div>
+
+      
 
   );
 
