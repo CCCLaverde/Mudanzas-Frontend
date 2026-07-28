@@ -6,6 +6,7 @@ import MudanzaFilter from "../components/MudanzaFilter";
 
 import MudanzaModal from "../components/modal/MudanzaModal";
 import ColaboradorModal from "../components/modal/ColaboradorModal";
+import TopToolbar from "../components/layout/TopToolbar";
 
 import {
   obtenerMudanzas,
@@ -163,6 +164,7 @@ function MudanzasPage({ darkMode, setDarkMode }) {
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",
+        borderRadius: "24px",
       }}
     >
 
@@ -185,81 +187,17 @@ function MudanzasPage({ darkMode, setDarkMode }) {
         }}
       >
 
-     <div
-  style={{
-    display: "grid",
-    gridTemplateColumns: "1fr auto 1fr",
-    alignItems: "center",
-    marginBottom: "25px",
+    <TopToolbar
+  darkMode={darkMode}
+  setDarkMode={setDarkMode}
+  onNuevaMudanza={() => {
+    setMudanzaEditar(null);
+    setMostrarModal(true);
   }}
->
-  {/* IZQUIERDA */}
-  <div>
-    <button
-      onClick={() => {
-        setMudanzaEditar(null);
-        setMostrarModal(true);
-      }}
-      style={{
-        padding: "12px 20px",
-        background: "#0d6efd",
-        color: "white",
-        border: "none",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: "600",
-      }}
-    >
-      ➕ Nueva Mudanza
-    </button>
-  </div>
-
-  {/* CENTRO */}
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "center",
-    }}
-  >
-    <button
-      onClick={() => setMostrarColaboradores(true)}
-      style={{
-        padding: "12px 20px",
-        background: "#10b981",
-        color: "white",
-        border: "none",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: "600",
-      }}
-    >
-      👷 Colaboradores
-    </button>
-  </div>
-
-  {/* DERECHA */}
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "flex-end",
-    }}
-  >
-    <button
-      onClick={() => setDarkMode(!darkMode)}
-      style={{
-        padding: "10px 16px",
-        borderRadius: "10px",
-        border: "none",
-        background: darkMode ? "#38bdf8" : "#111",
-        color: "white",
-        cursor: "pointer",
-        fontWeight: "600",
-      }}
-    >
-      {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
-    </button>
-  </div>
-</div>
+  onColaboradores={() => {
+    setMostrarColaboradores(true);
+  }}
+/>
       
         {/* DASHBOARD */}
 

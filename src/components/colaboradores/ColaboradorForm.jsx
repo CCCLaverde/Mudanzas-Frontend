@@ -11,6 +11,8 @@ function ColaboradorForm({
     estado: "ACTIVO",
   });
 
+  const textColor = darkMode ? "#f8fafc" : "#111827";
+
   // =========================
   // CARGAR DATOS PARA EDITAR
   // =========================
@@ -74,7 +76,7 @@ function ColaboradorForm({
         style={{
           margin: 0,
           fontSize: "22px",
-          color: "#0d6efd",
+          color: textColor,
         }}
       >
         {colaboradorEditar
@@ -90,6 +92,7 @@ function ColaboradorForm({
             display: "block",
             marginBottom: "8px",
             fontWeight: "600",
+            color: textColor,
           }}
         >
           Nombre completo
@@ -113,6 +116,7 @@ function ColaboradorForm({
             color: darkMode ? "#fff" : "#111827",
             outline: "none",
             boxSizing: "border-box",
+            color: textColor,
           }}
         />
       </div>
@@ -125,6 +129,7 @@ function ColaboradorForm({
             display: "block",
             marginBottom: "8px",
             fontWeight: "600",
+            color: textColor,
           }}
         >
           Estado
@@ -144,6 +149,7 @@ function ColaboradorForm({
               : "1px solid #d1d5db",
             background: darkMode ? "#1e293b" : "#fff",
             color: darkMode ? "#fff" : "#111827",
+            color: textColor,
           }}
         >
           <option value="ACTIVO">Activo</option>

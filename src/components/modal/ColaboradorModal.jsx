@@ -22,6 +22,8 @@ function ColaboradorModal({
 
   const [colaboradorEditar, setColaboradorEditar] = useState(null);
 
+  const textColor = darkMode ? "#f8fafc" : "#111827";
+
   // =====================================
   // CARGAR COLABORADORES
   // =====================================
@@ -173,6 +175,7 @@ function ColaboradorModal({
             style={{
               margin: 0,
               fontSize: "28px",
+              color: textColor,
             }}
           >
             👷 Administración de Colaboradores
@@ -182,6 +185,7 @@ function ColaboradorModal({
             style={{
               marginTop: "8px",
               opacity: ".75",
+              color: textColor,
             }}
           >
             Aquí podrás crear, editar, activar y desactivar colaboradores.

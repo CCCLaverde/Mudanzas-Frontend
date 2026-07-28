@@ -9,7 +9,11 @@ import {
 } from "chart.js";
 
 import { Doughnut, Bar } from "react-chartjs-2";
+
 import CalendarioMudanzas from "./CalendarioMudanzas";
+
+// 👇 Nuevo
+import EstadisticasColaborador from "./estadisticas/EstadisticasColaborador";
 
 
 
@@ -646,6 +650,22 @@ const options = {
 
 </div>
 
+ {/* ===========================
+      PRODUCTIVIDAD COLABORADORES
+============================ */}
+
+<div
+  style={{
+    marginTop: "25px",
+  }}
+>
+  <EstadisticasColaborador
+    darkMode={darkMode}
+  />
+</div>
+
+
+
 {/* ===========================
       GRÁFICO DÍAS
 ============================ */}
@@ -690,6 +710,8 @@ const options = {
     </div>
 
   </div>
+
+ 
 
 </div>
 

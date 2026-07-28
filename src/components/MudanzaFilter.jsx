@@ -50,6 +50,17 @@ function MudanzaFilter({ onFilter, darkMode }) {
     onFilter({});
   };
 
+  const inputStyle = (darkMode) => ({
+    width: "100%",
+    padding: "12px",
+    borderRadius: "10px",
+    border: darkMode ? "1px solid #475569" : "1px solid #d1d5db",
+    background: darkMode ? "#1e293b" : "#fff",
+    color: darkMode ? "#fff" : "#111827",
+
+    colorScheme: darkMode ? "dark" : "light",
+  });
+
   return (
     <div
       style={{
@@ -93,6 +104,7 @@ function MudanzaFilter({ onFilter, darkMode }) {
             value={fechaInicio}
             onChange={(e) => setFechaInicio(e.target.value)}
             style={inputStyle(darkMode)}
+            
           />
         </div>
 
