@@ -14,6 +14,7 @@ import CalendarioMudanzas from "./CalendarioMudanzas";
 
 // 👇 Nuevo
 import EstadisticasColaborador from "./estadisticas/EstadisticasColaborador";
+import IngresosEstadistica from "./estadisticas/IngresosEstadistica";
 
 
 
@@ -650,9 +651,23 @@ const options = {
 
 </div>
 
- {/* ===========================
+{/* ===========================
+      ESTADÍSTICAS DE INGRESOS
+=========================== */}
+
+<div
+  style={{
+    marginTop: "25px",
+  }}
+>
+  <IngresosEstadistica
+    darkMode={darkMode}
+  />
+</div>
+
+{/* ===========================
       PRODUCTIVIDAD COLABORADORES
-============================ */}
+=========================== */}
 
 <div
   style={{
@@ -663,7 +678,6 @@ const options = {
     darkMode={darkMode}
   />
 </div>
-
 
 
 {/* ===========================

@@ -9,22 +9,24 @@ function MudanzaForm({
   darkMode,
 }) {
   const [formData, setFormData] = useState({
-    fecha: "",
-    hora: "",
-    lugarRecogida: "",
-    lugarEntrega: "",
-    descripcion: "",
-    estado: "PENDIENTE",
+  fecha: "",
+  hora: "",
+  lugarRecogida: "",
+  lugarEntrega: "",
+  descripcion: "",
+  estado: "PENDIENTE",
 
-    cliente: {
-      nombre: "",
-      telefono: "",
-      email: "",
-    },
+  precio: "",
+  estadoPago: "PENDIENTE",
 
-    colaboradores: [],
-  });
+  cliente: {
+    nombre: "",
+    telefono: "",
+    email: "",
+  },
 
+  colaboradores: [],
+});
   const [colaboradores, setColaboradores] = useState([]);
 
   /* =========================
@@ -51,24 +53,27 @@ function MudanzaForm({
   useEffect(() => {
     if (!mudanzaEditar) return;
 
-    setFormData({
-      fecha: mudanzaEditar.fecha,
-      hora: mudanzaEditar.hora,
-      lugarRecogida: mudanzaEditar.lugarRecogida,
-      lugarEntrega: mudanzaEditar.lugarEntrega,
-      descripcion: mudanzaEditar.descripcion,
-      estado: mudanzaEditar.estado,
+   setFormData({
+  fecha: mudanzaEditar.fecha,
+  hora: mudanzaEditar.hora,
+  lugarRecogida: mudanzaEditar.lugarRecogida,
+  lugarEntrega: mudanzaEditar.lugarEntrega,
+  descripcion: mudanzaEditar.descripcion,
+  estado: mudanzaEditar.estado,
 
-      cliente: {
-        nombre: mudanzaEditar.nombreCliente || "",
-        telefono: mudanzaEditar.telefonoCliente || "",
-        email: "",
-      },
+  precio: mudanzaEditar.precio || "",
+  estadoPago: mudanzaEditar.estadoPago || "PENDIENTE",
 
-      colaboradores: mudanzaEditar.colaboradores
-        ? mudanzaEditar.colaboradores.map((c) => c.id)
-        : [],
-    });
+  cliente: {
+    nombre: mudanzaEditar.nombreCliente || "",
+    telefono: mudanzaEditar.telefonoCliente || "",
+    email: "",
+  },
+
+  colaboradores: mudanzaEditar.colaboradores
+    ? mudanzaEditar.colaboradores.map((c) => c.id)
+    : [],
+});
   }, [mudanzaEditar]);
 
   /* =========================
@@ -109,24 +114,33 @@ function MudanzaForm({
     }));
   };
 
+  const formatearPesos = (valor) => {
+  if (!valor) return "";
+
+  return new Intl.NumberFormat("es-CO").format(valor);
+};
+
   const limpiarFormulario = () => {
-    setFormData({
-      fecha: "",
-      hora: "",
-      lugarRecogida: "",
-      lugarEntrega: "",
-      descripcion: "",
-      estado: "PENDIENTE",
+  setFormData({
+    fecha: "",
+    hora: "",
+    lugarRecogida: "",
+    lugarEntrega: "",
+    descripcion: "",
+    estado: "PENDIENTE",
 
-      cliente: {
-        nombre: "",
-        telefono: "",
-        email: "",
-      },
+    precio: "",
+    estadoPago: "PENDIENTE",
 
-      colaboradores: [],
-    });
-  };
+    cliente: {
+      nombre: "",
+      telefono: "",
+      email: "",
+    },
+
+    colaboradores: [],
+  });
+};
 
   /* =========================
      GUARDAR
@@ -242,32 +256,93 @@ function MudanzaForm({
           }}
         />
 
-        <select
-          name="estado"
-          value={formData.estado}
-          onChange={handleChange}
-          style={{
-            gridColumn: "1 / -1",
-          }}
-        >
-          <option value="PENDIENTE">PENDIENTE</option>
-          <option value="EN_PROCESO">EN PROCESO</option>
-          <option value="FINALIZADA">FINALIZADA</option>
-          <option value="CANCELADA">CANCELADA</option>
-        </select>
+      {/* ================= ESTADO DE LA MUDANZA ================= */}
 
-        {/* ================= CLIENTE ================= */}
+<select
+  name="estado"
+  value={formData.estado}
+  onChange={handleChange}
+  style={{
+    gridColumn: "1 / -1",
+  }}
+>
+  <option value="PENDIENTE">PENDIENTE</option>
+  <option value="EN_PROCESO">EN PROCESO</option>
+  <option value="FINALIZADA">FINALIZADA</option>
+  <option value="CANCELADA">CANCELADA</option>
+</select>
 
-        <h3
-          style={{
-            gridColumn: "1 / -1",
-            color: "#0d6efd",
-            marginTop: "15px",
-            marginBottom: 0,
-          }}
-        >
-          👤 Datos del cliente
-        </h3>
+
+{/* ================= PRECIO Y PAGO ================= */}
+
+<div
+  style={{
+    gridColumn: "1 / -1",
+    display: "flex",
+    gap: "15px",
+  }}
+>
+  {/* PRECIO */}
+
+  <input
+    type="text"
+    name="precio"
+    placeholder="Precio de la mudanza"
+    value={
+      formData.precio
+        ? Number(formData.precio).toLocaleString("es-CO")
+        : ""
+    }
+    onChange={(e) => {
+      const soloNumeros = e.target.value.replace(/\D/g, "");
+
+      setFormData((prev) => ({
+        ...prev,
+        precio: soloNumeros,
+      }));
+    }}
+    required
+    style={{
+      flex: 1,
+    }}
+  />
+
+  {/* ESTADO DEL PAGO */}
+
+  <select
+    name="estadoPago"
+    value={formData.estadoPago}
+    onChange={handleChange}
+    style={{
+      flex: 1,
+    }}
+  >
+    <option value="PENDIENTE">
+      💳 Pendiente
+    </option>
+
+    <option value="PARCIAL">
+      🟡 Parcial
+    </option>
+
+    <option value="PAGADO">
+      🟢 Pagado
+    </option>
+  </select>
+</div>
+
+{/* ================= CLIENTE ================= */}
+
+<h3
+  style={{
+    gridColumn: "1 / -1",
+    color: "#0d6efd",
+    marginTop: "15px",
+    marginBottom: 0,
+  }}
+>
+  👤 Datos del cliente
+</h3>
 
         <input
           type="text"

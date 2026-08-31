@@ -113,7 +113,6 @@ function ColaboradorForm({
               ? "1px solid #475569"
               : "1px solid #d1d5db",
             background: darkMode ? "#1e293b" : "#fff",
-            color: darkMode ? "#fff" : "#111827",
             outline: "none",
             boxSizing: "border-box",
             color: textColor,
@@ -148,7 +147,6 @@ function ColaboradorForm({
               ? "1px solid #475569"
               : "1px solid #d1d5db",
             background: darkMode ? "#1e293b" : "#fff",
-            color: darkMode ? "#fff" : "#111827",
             color: textColor,
           }}
         >
