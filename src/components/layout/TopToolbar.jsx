@@ -3,24 +3,13 @@ function TopToolbar({
   setDarkMode,
   onNuevaMudanza,
   onColaboradores,
+  onLogout,
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "30px",
-      }}
-    >
-      {/* Botones izquierda */}
+    <div className="top-toolbar">
 
-      <div
-        style={{
-          display: "flex",
-          gap: "15px",
-        }}
-      >
+      {/* Botones izquierda */}
+      <div className="top-toolbar-group">
         <button
           onClick={onNuevaMudanza}
           style={buttonPrimary}
@@ -36,19 +25,26 @@ function TopToolbar({
         </button>
       </div>
 
-      {/* Botón derecha */}
+      {/* Botones derecha */}
+      <div className="top-toolbar-group">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          style={{
+            ...buttonDark,
+            background: darkMode ? "#38bdf8" : "#111827",
+          }}
+        >
+          {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
+        </button>
 
-      <button
-        onClick={() => setDarkMode(!darkMode)}
-        style={{
-          ...buttonDark,
-          background: darkMode ? "#38bdf8" : "#111827",
-        }}
-      >
-        {darkMode
-          ? "☀️ Modo Claro"
-          : "🌙 Modo Oscuro"}
-      </button>
+        <button
+          onClick={onLogout}
+          style={buttonLogout}
+        >
+          🚪 Cerrar sesión
+        </button>
+      </div>
+
     </div>
   );
 }
@@ -77,6 +73,17 @@ const buttonSuccess = {
 
 const buttonDark = {
   padding: "12px 20px",
+  color: "white",
+  border: "none",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: "600",
+  fontSize: "15px",
+};
+
+const buttonLogout = {
+  padding: "12px 20px",
+  background: "#dc3545",
   color: "white",
   border: "none",
   borderRadius: "10px",

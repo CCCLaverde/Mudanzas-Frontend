@@ -37,13 +37,14 @@ function MudanzaList({ mudanzas, onEditar, onEliminar, darkMode }) {
 
   return (
     <div
+      className="mudanza-list"
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill,minmax(360px,1fr))",
         gap: "22px",
         marginTop: "25px",
-      }}
-    >
+    }}
+  >
       {mudanzasOrdenadas.map((m) => (
         <div
           key={m.id}

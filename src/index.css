@@ -13,6 +13,690 @@ body,
 
 body {
   margin: 0;
-  background: #f4f6fb;
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ================================
+   LOGIN
+================================ */
+
+.login-page {
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px 20px;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(59, 130, 246, 0.18),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(14, 165, 233, 0.15),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #f8fafc 0%,
+      #eef4ff 50%,
+      #e8f0fb 100%
+    );
+}
+
+/* ================================
+   TARJETA
+================================ */
+
+.login-card {
+  width: 100%;
+  max-width: 430px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+
+  border-radius: 26px;
+
+  padding: 42px;
+
+  box-shadow:
+    0 25px 60px rgba(15, 23, 42, 0.12),
+    0 8px 20px rgba(15, 23, 42, 0.05);
+
+  animation: loginAppear 0.5s ease;
+}
+
+/* ================================
+   ICONO
+================================ */
+
+.login-icon {
+  width: 82px;
+  height: 82px;
+
+  margin: 0 auto 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 22px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  font-size: 38px;
+
+  box-shadow:
+    0 12px 25px rgba(37, 99, 235, 0.28);
+
+  transform: translateY(0);
+
+  transition: transform 0.2s ease;
+}
+
+.login-icon:hover {
+  transform: translateY(-3px);
+}
+
+/* ================================
+   TITULO
+================================ */
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-header h1 {
+  color: #0f172a;
+
+  font-size: 30px;
+
+  font-weight: 700;
+
+  letter-spacing: -0.5px;
+
+  margin-bottom: 8px;
+}
+
+.login-header p {
+  color: #64748b;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+/* ================================
+   FORMULARIO
+================================ */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #334155;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+/* ================================
+   INPUTS
+================================ */
+
+.input-container {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+}
+
+.input-container input {
+  width: 100%;
+
+  height: 52px;
+
+  padding: 0 46px;
+
+  border: 1px solid #dbe3ef;
+
+  border-radius: 13px;
+
+  background: #f8fafc;
+
+  color: #0f172a;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input-container input::placeholder {
+  color: #94a3b8;
+}
+
+.input-container input:hover {
+  border-color: #cbd5e1;
+}
+
+.input-container input:focus {
+  background: #ffffff;
+
+  border-color: #3b82f6;
+
+  box-shadow:
+    0 0 0 4px rgba(59, 130, 246, 0.10);
+}
+
+.input-icon {
+  position: absolute;
+
+  left: 16px;
+
+  font-size: 17px;
+
+  pointer-events: none;
+
+  z-index: 1;
+}
+
+/* ================================
+   MOSTRAR PASSWORD
+================================ */
+
+.password-toggle {
+  position: absolute;
+
+  right: 14px;
+
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+  padding: 5px;
+
+  opacity: 0.65;
+
+  transition: opacity 0.2s ease;
+}
+
+.password-toggle:hover {
+  opacity: 1;
+}
+
+/* ================================
+   ERROR
+================================ */
+
+.login-error {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px 14px;
+
+  border-radius: 12px;
+
+  background: #fff1f2;
+
+  border: 1px solid #fecdd3;
+
+  color: #be123c;
+
+  font-size: 13px;
+}
+
+/* ================================
+   BOTON
+================================ */
+
+.login-button {
+  width: 100%;
+
+  height: 52px;
+
+  margin-top: 2px;
+
+  border: none;
+
+  border-radius: 13px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 20px rgba(37, 99, 235, 0.22);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.login-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 25px rgba(37, 99, 235, 0.28);
+}
+
+.login-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.7;
+}
+
+/* ================================
+   SPINNER
+================================ */
+
+.spinner {
+  width: 17px;
+  height: 17px;
+
+  border: 2px solid rgba(255, 255, 255, 0.4);
+
+  border-top-color: white;
+
+  border-radius: 50%;
+
+  animation: spin 0.7s linear infinite;
+}
+
+/* ================================
+   FOOTER
+================================ */
+
+.login-footer {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+.login-footer span {
+  flex: 1;
+
+  height: 1px;
+
+  background: #e2e8f0;
+}
+
+.login-footer p {
+  color: #94a3b8;
+
+  font-size: 11px;
+
+  white-space: nowrap;
+}
+
+/* ================================
+   ANIMACIONES
+================================ */
+
+@keyframes loginAppear {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+/* =========================================
+   TOP TOOLBAR
+   ========================================= */
+
+.top-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.top-toolbar-group {
+  display: flex;
+  gap: 15px;
+}
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 1000px) {
+  .top-toolbar-group {
+    gap: 10px;
+  }
+}
+
+/* =========================================
+   CELULAR
+   ========================================= */
+
+@media (max-width: 700px) {
+  .top-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .top-toolbar-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .top-toolbar button {
+    width: 100%;
+    min-height: 46px;
+  }
+}
+
+/* =========================================
+   CELULAR PEQUEÑO
+   ========================================= */
+
+@media (max-width: 420px) {
+  .top-toolbar-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 480px) {
+  .login-page {
+    padding: 20px 15px;
+  }
+
+  .login-card {
+    padding: 32px 24px;
+
+    border-radius: 22px;
+  }
+
+  .login-icon {
+    width: 72px;
+    height: 72px;
+
+    font-size: 32px;
+
+    border-radius: 19px;
+  }
+
+  .login-header h1 {
+    font-size: 27px;
+  }
+
+  /* =========================================
+   FILTRO DE MUDANZAS
+========================================= */
+
+.mudanza-filter-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.mudanza-filter-form {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 18px 25px;
+}
+
+.mudanza-filter-field {
+  flex: 1 1 180px;
+  min-width: 160px;
+}
+
+.mudanza-filter-button {
+  min-height: 38px;
+  white-space: nowrap;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+
+  .mudanza-filter-form {
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .mudanza-filter-field {
+    flex: 1 1 200px;
+  }
+
+}
+
+/* =========================================
+   CELULAR
+========================================= */
+
+@media (max-width: 700px) {
+
+  .mudanza-filter-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .mudanza-filter-form h3 {
+    grid-column: 1 / -1;
+  }
+
+  .mudanza-filter-field {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .mudanza-filter-button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+}
+
+/* =========================================
+   CELULAR PEQUEÑO
+========================================= */
+
+@media (max-width: 480px) {
+
+  .mudanza-filter-form {
+    grid-template-columns: 1fr;
+  }
+
+  .mudanza-filter-form h3 {
+    grid-column: auto;
+  }
+
+}
+
+/* =========================================
+   LISTA DE MUDANZAS
+========================================= */
+
+.mudanza-list {
+  width: 100%;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+
+  .mudanza-list {
+    gap: 16px !important;
+  }
+
+}
+
+/* =========================================
+   CELULAR
+========================================= */
+
+@media (max-width: 700px) {
+
+  .mudanza-list {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+}
+
+/* =========================================
+   CELULAR PEQUEÑO
+========================================= */
+
+@media (max-width: 420px) {
+
+  .mudanza-list {
+    gap: 12px !important;
+  }
+
+}
+
+/* =========================================
+   DASHBOARD - RESPONSIVE
+   PC: conserva el diseño original
+========================================= */
+
+/* =========================================
+   CELULAR
+========================================= */
+
+@media (max-width: 700px) {
+
+  /* KPI */
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  /* GRÁFICOS */
+  .dashboard-charts-grid {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    margin-top: 25px !important;
+  }
+
+  .dashboard-chart-card {
+    padding: 20px !important;
+    border-radius: 18px !important;
+  }
+
+  .dashboard-chart-container {
+    height: 300px !important;
+  }
+
+  .dashboard-section {
+    margin-top: 18px !important;
+  }
+}
+
+
+/* =========================================
+   CELULAR PEQUEÑO
+========================================= */
+
+@media (max-width: 420px) {
+
+  .dashboard-kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-chart-container {
+    height: 270px !important;
+  }
+
+  .dashboard-chart-card {
+    padding: 16px !important;
+  }
+}
+
+
+
 }

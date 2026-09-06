@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import api from "../services/api";
 
 import Dashboard from "../components/Dashboard";
 import MudanzaList from "../components/MudanzaList";
@@ -13,7 +14,7 @@ import {
   eliminarMudanza,
 } from "../services/mudanzaService";
 
-function MudanzasPage({ darkMode, setDarkMode }) {
+function MudanzasPage({ darkMode, setDarkMode, onLogout }) {
 
   const [todasMudanzas, setTodasMudanzas] = useState([]);
   const [mudanzas, setMudanzas] = useState([]);
@@ -50,30 +51,28 @@ function MudanzasPage({ darkMode, setDarkMode }) {
 
   const cargarMudanzasHoy = async () => {
 
-    try {
+  try {
 
-      const ahora = new Date();
+    const ahora = new Date();
 
-      const hoy =
-        ahora.getFullYear() +
-        "-" +
-        String(ahora.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(ahora.getDate()).padStart(2, "0");
+    const hoy =
+      ahora.getFullYear() +
+      "-" +
+      String(ahora.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(ahora.getDate()).padStart(2, "0");
 
-      const response = await fetch(
-        `http://localhost:8080/mudanzas/fecha?fecha=${hoy}`
-      );
+    const response = await api.get(
+      `/mudanzas/fecha?fecha=${hoy}`
+    );
 
-      const data = await response.json();
+    setMudanzasHoy(response.data);
 
-      setMudanzasHoy(data);
+  } catch (error) {
+    console.error(error);
+  }
 
-    } catch (error) {
-      console.error(error);
-    }
-
-  };
+};
 
   // ==========================
   // ELIMINAR
@@ -197,6 +196,7 @@ function MudanzasPage({ darkMode, setDarkMode }) {
   onColaboradores={() => {
     setMostrarColaboradores(true);
   }}
+   onLogout={onLogout}
 />
       
         {/* DASHBOARD */}

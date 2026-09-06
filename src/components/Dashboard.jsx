@@ -460,6 +460,7 @@ const options = {
     ============================ */}
 
     <div
+      className="dashboard-kpi-grid"
       style={{
         display: "grid",
         gridTemplateColumns:
@@ -565,6 +566,7 @@ const options = {
 ============================ */}
 
 <div
+  className="dashboard-charts-grid "
   style={{
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit,minmax(500px,1fr))",
@@ -578,6 +580,7 @@ const options = {
   {/* DONA */}
 
   <div
+    className="dashboard-chart-card"
     style={{
       background: darkMode ? "#1e293b" : "#ffffff",
       border: `1px solid ${darkMode ? "#334155" : "#e5e7eb"}`,
@@ -615,6 +618,7 @@ const options = {
   {/* BARRAS POR MES */}
 
   <div
+    className="dashboard-chart-card"
     style={{
       background: darkMode ? "#1e293b" : "#ffffff",
       border: `1px solid ${darkMode ? "#334155" : "#e5e7eb"}`,
@@ -656,6 +660,7 @@ const options = {
 =========================== */}
 
 <div
+  className="dashboard-chart-card"
   style={{
     marginTop: "25px",
   }}
@@ -670,6 +675,7 @@ const options = {
 =========================== */}
 
 <div
+  className="dashboard-chart-card"
   style={{
     marginTop: "25px",
   }}
@@ -685,6 +691,7 @@ const options = {
 ============================ */}
 
 <div
+  className="dashboard-chart-card"
   style={{
     marginTop: "25px",
   }}

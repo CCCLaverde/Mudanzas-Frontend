@@ -1,28 +1,28 @@
-import axios from "axios";
+import api from "./api";
 
-const API_URL = "http://localhost:8080/colaboradores";
+const API_URL = "/colaboradores";
 
 // =========================
 // OBTENER
 // =========================
 
 export const obtenerColaboradores = async () => {
-  const response = await axios.get(API_URL);
+  const response = await api.get(API_URL);
   return response.data;
 };
 
 export const obtenerColaboradoresActivos = async () => {
-  const response = await axios.get(`${API_URL}/estado/ACTIVO`);
+  const response = await api.get(`${API_URL}/estado/ACTIVO`);
   return response.data;
 };
 
 export const obtenerColaboradoresInactivos = async () => {
-  const response = await axios.get(`${API_URL}/estado/INACTIVO`);
+  const response = await api.get(`${API_URL}/estado/INACTIVO`);
   return response.data;
 };
 
 export const obtenerColaboradorPorId = async (id) => {
-  const response = await axios.get(`${API_URL}/${id}`);
+  const response = await api.get(`${API_URL}/${id}`);
   return response.data;
 };
 
@@ -31,7 +31,7 @@ export const obtenerColaboradorPorId = async (id) => {
 // =========================
 
 export const buscarColaboradores = async (nombre) => {
-  const response = await axios.get(`${API_URL}/buscar`, {
+  const response = await api.get(`${API_URL}/buscar`, {
     params: { nombre },
   });
 
@@ -43,7 +43,7 @@ export const buscarColaboradores = async (nombre) => {
 // =========================
 
 export const crearColaborador = async (colaborador) => {
-  const response = await axios.post(API_URL, colaborador);
+  const response = await api.post(API_URL, colaborador);
   return response.data;
 };
 
@@ -52,7 +52,7 @@ export const crearColaborador = async (colaborador) => {
 // =========================
 
 export const actualizarColaborador = async (id, colaborador) => {
-  const response = await axios.put(`${API_URL}/${id}`, colaborador);
+  const response = await api.put(`${API_URL}/${id}`, colaborador);
   return response.data;
 };
 
@@ -61,9 +61,10 @@ export const actualizarColaborador = async (id, colaborador) => {
 // =========================
 
 export const activarColaborador = async (id) => {
-  await axios.put(`${API_URL}/${id}/activar`);
+  await api.put(`${API_URL}/${id}/activar`);
 };
 
 export const desactivarColaborador = async (id) => {
-  await axios.put(`${API_URL}/${id}/desactivar`);
+  await api.put(`${API_URL}/${id}/desactivar`);
 };
+

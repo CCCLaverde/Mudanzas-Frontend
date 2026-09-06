@@ -341,7 +341,7 @@ function IngresosEstadistica({ darkMode }) {
             📅{" "}
             {semanaOffset === 0
               ? "Esta semana"
-              : semanaOffset === -1
+              : semanaOffset === - 1
               ? "Semana anterior"
               : semanaOffset === 1
               ? "Semana siguiente"

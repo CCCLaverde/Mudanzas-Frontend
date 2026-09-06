@@ -1,14 +1,14 @@
 
-import axios from "axios";
+import api from "./api";
 
-const API_URL = "http://localhost:8080/estadisticas";
+const API_URL = "/estadisticas";
 
 // ========================================
 // ESTADÍSTICAS DE COLABORADORES
 // ========================================
 
 export const obtenerEstadisticasColaboradores = async (mes, anio) => {
-  const response = await axios.get(
+  const response = await api.get(
     `${API_URL}/colaboradores`,
     {
       params: {
@@ -26,7 +26,7 @@ export const obtenerEstadisticasColaboradores = async (mes, anio) => {
 // ========================================
 
 export const obtenerIngresos = async (fechaInicio, fechaFin) => {
-  const response = await axios.get(
+  const response = await api.get(
     `${API_URL}/ingresos`,
     {
       params: {
@@ -38,3 +38,4 @@ export const obtenerIngresos = async (fechaInicio, fechaFin) => {
 
   return response.data;
 };
+

@@ -1,4 +1,7 @@
-const API_URL = "http://localhost:8080/mudanzas";
+
+import api from "./api";
+
+const API_URL = "/mudanzas";
 
 // =======================================
 // OBTENER MUDANZAS
@@ -86,24 +89,11 @@ export const obtenerMudanzas = async (filtros = {}) => {
 
   }
 
-  // =====================================
-  // TODAS
-  // =====================================
-  else {
-
-    url = API_URL;
-
-  }
-
   console.log("Consultando:", url);
 
-  const response = await fetch(url);
+  const response = await api.get(url);
 
-  if (!response.ok) {
-    throw new Error("Error al obtener mudanzas");
-  }
-
-  return await response.json();
+  return response.data;
 };
 
 // =======================================
@@ -111,19 +101,9 @@ export const obtenerMudanzas = async (filtros = {}) => {
 // =======================================
 export const crearMudanza = async (mudanza) => {
 
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(mudanza),
-  });
+  const response = await api.post(API_URL, mudanza);
 
-  if (!response.ok) {
-    throw new Error("Error al crear mudanza");
-  }
-
-  return await response.json();
+  return response.data;
 };
 
 // =======================================
@@ -131,19 +111,9 @@ export const crearMudanza = async (mudanza) => {
 // =======================================
 export const actualizarMudanza = async (id, mudanza) => {
 
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(mudanza),
-  });
+  const response = await api.put(`${API_URL}/${id}`, mudanza);
 
-  if (!response.ok) {
-    throw new Error("Error al actualizar mudanza");
-  }
-
-  return await response.json();
+  return response.data;
 };
 
 // =======================================
@@ -151,12 +121,7 @@ export const actualizarMudanza = async (id, mudanza) => {
 // =======================================
 export const eliminarMudanza = async (id) => {
 
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    throw new Error("Error al eliminar mudanza");
-  }
+  await api.delete(`${API_URL}/${id}`);
 
 };
+

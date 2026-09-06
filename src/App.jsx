@@ -1,10 +1,28 @@
 import { useState } from "react";
 import MudanzasPage from "./pages/MudanzasPage";
-
+import Login from "./components/Login";
+import {
+  estaAutenticado,
+  cerrarSesion,
+} from "./services/authService";
 
 function App() {
 
+  const [autenticado, setAutenticado] = useState(estaAutenticado());
   const [darkMode, setDarkMode] = useState(false);
+
+  const handleLogin = () => {
+    setAutenticado(true);
+  };
+
+  const handleLogout = () => {
+    cerrarSesion();
+    setAutenticado(false);
+  };
+
+  if (!autenticado) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   const backgroundColor = darkMode ? "#020617" : "#f4f6fb";
   const headerColor = darkMode ? "#0f172a" : "#ffffff";
@@ -22,7 +40,6 @@ function App() {
         transition: "all .3s ease",
       }}
     >
-      {/* HEADER */}
       <header
         style={{
           padding: "30px 40px",
@@ -59,16 +76,15 @@ function App() {
         </p>
       </header>
 
-      {/* CONTENIDO */}
       <main
         style={{
           padding: "35px",
         }}
       >
-        
         <MudanzasPage
           darkMode={darkMode}
           setDarkMode={setDarkMode}
+          onLogout={handleLogout}
         />
       </main>
     </div>
