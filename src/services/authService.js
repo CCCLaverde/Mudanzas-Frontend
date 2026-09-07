@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:8080/auth";
+import api from "./api";
 
 export const iniciarSesion = async (username, password) => {
-  const response = await axios.post(`${API_URL}/login`, {
+  const response = await api.post("/auth/login", {
     username,
     password,
   });
