@@ -62,6 +62,8 @@ function App() {
           }}
         >
           🚚 Sistema de Gestión de Mudanzas
+          <br />
+          LOS MAGNIFICOS
         </h1>
 
         <p
